@@ -1,5 +1,5 @@
 # UGA Database Management - Group 4
-UGA CSCI 4370/6370 - Spring 2015
+UGA CSCI 4370/6370 - Fall 2015
 
 ## Group Members
 | Role | Name |
