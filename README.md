@@ -1,4 +1,4 @@
-# UGA Database Management - Group 4
+# UGA Database Management Code Repo
 UGA CSCI 4370/6370 - Fall 2015
 
 ## Group Members
