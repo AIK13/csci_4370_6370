@@ -180,8 +180,9 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  Implemented by Michael Bottone
-        Comparable[] result = index.get(keyVal);
-        rows.add(result);
+        
+        Comparable[] result = index.get(keyVal); // Use the index map to retrieve the tuple for the given key
+        rows.add(result); // Add the returned tuple to the returned result
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // select
@@ -201,7 +202,14 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  Implemented by Michael Bottone
+        
+        rows.addAll(tuples); // Add the tuples from the first table to the result
+        for (KeyType k : table2.index.keySet()) // Look through the keys of the second table
+        {
+        	 // If the first table doesn't have a tuple for the given key, add that row to the result.
+        	if (!index.containsKey(k)) rows.add(table2.index.get(k));
+        }
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // union
