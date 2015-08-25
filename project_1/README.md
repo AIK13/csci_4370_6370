@@ -8,5 +8,5 @@
 | Select  | Michael Bottone |
 | Union  | Michael Bottone |
 | Project  | TBD |
-| Minus  | TBD |
+| Minus  | Ashley Bennett |
 | Join  | TBD |
