@@ -1,13 +1,13 @@
-# UGA Database Management - Group 4
-UGA CSCI 4370/6370 - Spring 2015
+# UGA Database Management Code Repo
+UGA CSCI 4370/6370 - Fall 2015
 
 ## Group Members
 | Role | Name |
 | ----- | ---- |
 | Manager | Michael Bottone |
-| Programmer | TBD |
-| Programmer |  TBD |
-| Programmer | TBD |
+| Programmer | Ashley Bennett |
+| Programmer |  Jared McReynolds |
+| Programmer | Tiffany Chong |
 
 ## Class/Project Information
 http://cobweb.cs.uga.edu/~jam/home/courses/csci4370/s4370.html
