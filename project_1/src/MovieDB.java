@@ -65,6 +65,7 @@ class MovieDB
         movieStar.insert (star0);
         movieStar.insert (star1);
         movieStar.insert (star2);
+        movieStar.insert (star2);
         movieStar.print ();
 
         Comparable [] cast0 = { "Star_Wars", 1977, "Carrie_Fisher" };

@@ -19,7 +19,12 @@ import static java.lang.System.out;
 public class KeyType
        implements Comparable <KeyType>, Serializable
 {
-    /** Array holding the attribute values for a particular key
+    /**
+	 * Required variable
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/** Array holding the attribute values for a particular key
      */
     private final Comparable [] key;
 

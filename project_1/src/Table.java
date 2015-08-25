@@ -22,7 +22,12 @@ import static java.lang.System.out;
 public class Table
        implements Serializable
 {
-    /** Relative path for storage directory
+    /**
+	 * Required variable
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** Relative path for storage directory
      */
     private static final String DIR = "store" + File.separator;
 
@@ -174,7 +179,9 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  Implemented by Michael Bottone
+        Comparable[] result = index.get(keyVal);
+        rows.add(result);
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // select
