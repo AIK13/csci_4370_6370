@@ -258,6 +258,29 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  T O   B E   I M P L E M E N T E D 
+        
+        //loop through two tables performing a cartisian product and concatenating 
+        //the tuples.
+        //
+        for(Comparable[] rows1 : tuples){
+    		for(Comparable[] rows2 : table2.tuples){
+    			
+    			rows.add(ArrayUtil.concat(rows1, rows2));
+    		}
+    	}
+        
+        //creating a new table from the new longer tuples
+    	Table tempTable = new Table(name + count++, ArrayUtil.concat (attribute, table2.attribute),
+                ArrayUtil.concat (domain, table2.domain), key, rows);
+    	
+    	tempTable.select(predicate);
+    	for(int i = 0; i < t_attrs.length; i++){
+    		
+    		if(t_attrs[i] == u_attrs[i]){
+    			
+    		}
+    	}
+    	
 
         return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
