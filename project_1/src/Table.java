@@ -231,6 +231,23 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  T O   B E   I M P L E M E N T E D 
+        //  Implemented by Ashley Bennett
+
+        for (Comparable[] tuple : tuples) {
+          boolean exists = false;
+
+          //checks if the tuple exists in table 2
+          for (Comparable[] tuple1 : table2:tuples) {
+            if (tuple == tuple1) {
+              exists = true;
+              break;
+            } //if
+          } //for
+
+          //if the tuple doesn't exist in table 2, its added to the row list
+          if (!exists)
+            rows.add(tuple);
+        } //for
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // minus
