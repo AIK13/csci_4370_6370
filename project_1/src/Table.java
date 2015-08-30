@@ -230,7 +230,6 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
         //  Implemented by Ashley Bennett
 
         for (Comparable[] tuple : tuples) {
