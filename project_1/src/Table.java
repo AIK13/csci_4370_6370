@@ -147,7 +147,7 @@ public class Table
         // Implemented by Tiffany Chong
         
         tuples.stream ().forEachOrdered( (tuple) -> {// look through tuples
-        	rows.add( extract (tuple, attrs)); // extract desired content/columns from tuples and add them to rows (result)
+        	rows.add( extract (tuple, attrs)); // extract (see private method) desired content/columns from tuples and add these to rows (result)
         });   
    
         return new Table (name + count++, attrs, colDomain, newKey, rows);
