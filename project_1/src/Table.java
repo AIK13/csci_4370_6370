@@ -236,7 +236,7 @@ public class Table
           boolean exists = false;
 
           //checks if the tuple exists in table 2
-          for (Comparable[] tuple1 : table2:tuples) {
+          for (Comparable[] tuple1 : table2.tuples) {
             if (tuple == tuple1) {
               exists = true;
               break;
