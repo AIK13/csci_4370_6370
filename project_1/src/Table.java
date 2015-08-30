@@ -144,8 +144,11 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
-
+        // Implemented by Tiffany Chong
+        
+        tuples.stream ().forEach( (tuple) -> // retrieve desired content/columns from tuples
+        	// rows.add( ); // add them to result
+   
         return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
 
