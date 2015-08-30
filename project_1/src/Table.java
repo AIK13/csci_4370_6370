@@ -146,8 +146,9 @@ public class Table
 
         // Implemented by Tiffany Chong
         
-        tuples.stream ().forEach( (tuple) -> // retrieve desired content/columns from tuples
-        	// rows.add( ); // add them to result
+        tuples.stream ().forEachOrdered( (tuple) -> {// look through tuples
+        	rows.add( extract (tuple, attrs)); // extract desired content/columns from tuples and add them to rows (result)
+        });   
    
         return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
