@@ -570,8 +570,20 @@ public class Table
      */
     private boolean typeCheck (Comparable [] t)
     {
-        //  T O   B E   I M P L E M E N T E D
-
+    	// First check of the length is correct
+    	if (domain.length != t.length) {
+            out.println ("compatible ERROR: table have different arity");
+            return false;
+        } // if
+    	
+    	// Then check that all the values are the correct class.
+        for (int j = 0; j < domain.length; j++) {
+            if (domain[j] != t[j].getClass()) {
+                out.println ("compatible ERROR: tables disagree on domain " + j);
+                return false;
+            } // if
+        } // for
+        
         return true;
     } // typeCheck
 
