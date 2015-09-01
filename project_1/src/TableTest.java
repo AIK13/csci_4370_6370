@@ -5,6 +5,11 @@ import org.junit.Test;
 
 public class TableTest
 {
+	/**
+	 * Generates a movie table for testing
+	 * 
+	 * @return a sample movie table
+	 */
 	public Table createMovieTable()
 	{
 		Table movie = new Table ("movie", "title year length genre studioName producerNo",
@@ -20,6 +25,11 @@ public class TableTest
         return movie;
 	}
 	
+	/**
+	 * Generates a cinema table for testing
+	 * 
+	 * @return a sample cinema table
+	 */
 	public Table createCinemaTable()
 	{
 		Table cinema = new Table ("cinema", "title year length genre studioName producerNo",
@@ -33,6 +43,11 @@ public class TableTest
         return cinema;
 	}
 	
+	/**
+	 * Generates a studio table for testing
+	 * 
+	 * @return a sample studio table
+	 */
 	public Table createStudioTable()
 	{
 		Table studio = new Table ("studio", "name address presNo",
@@ -46,6 +61,9 @@ public class TableTest
 		return studio;
 	}
 	
+	/**
+	 * Tests the project method.
+	 */
 	@Test
 	public void testProject()
 	{
@@ -57,6 +75,9 @@ public class TableTest
 		assertEquals(movie_project.col("length"), -1);
 	}
 	
+	/**
+	 * Tests the select method.
+	 */
 	@Test
 	public void testSelect()
 	{
@@ -68,6 +89,9 @@ public class TableTest
 		assertEquals(starWars[0], "Star_Wars");
 	}
 	
+	/**
+	 * Tests the union method.
+	 */
 	@Test
 	public void testUnion()
 	{
@@ -78,6 +102,9 @@ public class TableTest
 		assertEquals(union.getTableLength(), 5);
 	}
 	
+	/**
+	 * Tests the minus method.
+	 */
 	@Test
 	public void testMinus()
 	{
@@ -88,6 +115,9 @@ public class TableTest
 		assertEquals(minus.getTableLength(), 2);
 	}
 	
+	/**
+	 * Tests the equi join method.
+	 */
 	@Test
 	public void testEquiJoin()
 	{
@@ -101,6 +131,9 @@ public class TableTest
 		assertEquals(studioName.compareTo(name), 0);
 	}
 	
+	/**
+	 * Tests the natural join method.
+	 */
 	@Test
 	public void testNaturalJoin()
 	{
