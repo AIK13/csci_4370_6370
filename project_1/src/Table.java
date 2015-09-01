@@ -277,9 +277,30 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D
-
-        return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
+        //  Implemented by Jared McReynolds
+            
+        //loop through both tables and finding the attribute names that match
+    	this.tuples.stream()
+    	.forEach(y -> table2.tuples.stream()
+    		.filter(m -> {
+    			for(int i = 0; i < t_attrs.length; i++){
+    				if(!y[this.col(t_attrs[i])].equals(m[table2.col(u_attrs[i])])){
+    					return false;
+    				}
+    			};
+    			return true;
+    		}).forEach(m -> rows.add(ArrayUtil.concat(y,m))));
+    	
+    		//appending 2 onto the duplicate attribute names
+    		String[] tempAttributeArray = table2.attribute;
+    		for(int i = 0; i < this.attribute.length; i++){
+    			for(int j = 0; j< table2.attribute.length; j++){
+    				if(this.attribute[i].equals(table2.attribute[j])){
+    					tempAttributeArray[j] = table2.attribute[j] + "2";
+    				}
+    			}
+    		}
+        return new Table (name + count++, ArrayUtil.concat (attribute, tempAttributeArray),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
     } // join
 
@@ -298,12 +319,29 @@ public class Table
         out.println ("RA> " + name + ".join (" + table2.name + ")");
 
         List <Comparable []> rows = new ArrayList <> ();
+        
+        String attrs = "";
 
+<<<<<<< HEAD
+        //  Implemented by Jared McReynolds
+        
+        //loop through the attribute names of the two tables and adding t t a string
+        for(int i = 0; i < this.attribute.length; i++){
+        	for(int j = 0; j < table2.attribute.length; j++){
+        		if(this.attribute[i].equals(table2.attribute[j])){
+        			attrs += this.attribute[i] + " ";
+        		}
+        	}
+        }
+        	
+        return this.join(attrs, attrs, table2);
+=======
         //  T O   B E   I M P L E M E N T E D
 
         // FIX - eliminate duplicate columns
         return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
+>>>>>>> 8b3d4d199171b3944203d3c9e3acdb5720a0ca5c
     } // join
 
     /************************************************************************************
