@@ -274,8 +274,8 @@ public class Table
      *
      * #usage movie.join ("studioNo", "name", studio)
      *
-     * @param attribute1  the attributes of this table to be compared (Foreign Key)
-     * @param attribute2  the attributes of table2 to be compared (Primary Key)
+     * @param attributes1  the attributes of this table to be compared (Foreign Key)
+     * @param attributes2  the attributes of table2 to be compared (Primary Key)
      * @param table2      the rhs table in the join operation
      * @return  a table with tuples satisfying the equality predicate
      */
