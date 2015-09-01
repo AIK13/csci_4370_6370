@@ -58,7 +58,7 @@ public class Table
      */
     private final List <Comparable []> tuples;
 
-    /** Primary key. 
+    /** Primary key.
      */
     private final String [] key;
 
@@ -77,7 +77,7 @@ public class Table
      * @param _attribute  the string containing attributes names
      * @param _domain     the string containing attribute domains (data types)
      * @param _key        the primary key
-     */  
+     */
     public Table (String _name, String [] _attribute, Class [] _domain, String [] _key)
     {
         name      = _name;
@@ -96,7 +96,7 @@ public class Table
      * @param _domain     the string containing attribute domains (data types)
      * @param _key        the primary key
      * @param _tuple      the list of tuples containing the data
-     */  
+     */
     public Table (String _name, String [] _attribute, Class [] _domain, String [] _key,
                   List <Comparable []> _tuples)
     {
@@ -149,7 +149,7 @@ public class Table
         tuples.stream ().forEachOrdered( (tuple) -> {// look through tuples
         	rows.add( extract (tuple, attrs)); // extract (see private method) desired content/columns from tuples and add these to rows (result)
         });   
-   
+
         return new Table (name + count++, attrs, colDomain, newKey, rows);
     } // project
 
@@ -184,7 +184,7 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  Implemented by Michael Bottone
-        
+
         Comparable[] result = index.get(keyVal); // Use the index map to retrieve the tuple for the given key
         rows.add(result); // Add the returned tuple to the returned result
 
@@ -207,7 +207,7 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  Implemented by Michael Bottone
-        
+
         rows.addAll(tuples); // Add the tuples from the first table to the result
         for (KeyType k : table2.index.keySet()) // Look through the keys of the second table
         {
@@ -234,7 +234,23 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  Implemented by Ashley Bennett
+
+        for (Comparable[] tuple : tuples) {
+          boolean exists = false;
+
+          //checks if the tuple exists in table 2
+          for (Comparable[] tuple1 : table2.tuples) {
+            if (tuple == tuple1) {
+              exists = true;
+              break;
+            } //if
+          } //for
+
+          //if the tuple doesn't exist in table 2, its added to the row list
+          if (!exists)
+            rows.add(tuple);
+        } //for
 
         return new Table (name + count++, attribute, domain, key, rows);
     } // minus
@@ -261,7 +277,7 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  T O   B E   I M P L E M E N T E D
 
         return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
@@ -283,7 +299,7 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
+        //  T O   B E   I M P L E M E N T E D
 
         // FIX - eliminate duplicate columns
         return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
@@ -378,7 +394,7 @@ public class Table
     } // printIndex
 
     /************************************************************************************
-     * Load the table with the given name into memory. 
+     * Load the table with the given name into memory.
      *
      * @param name  the name of the table to load
      */
@@ -471,7 +487,7 @@ public class Table
      *
      * @param t       the tuple to extract from
      * @param column  the array of column names
-     * @return  a smaller tuple extracted from tuple t 
+     * @return  a smaller tuple extracted from tuple t
      */
     private Comparable [] extract (Comparable [] t, String [] column)
     {
@@ -483,15 +499,15 @@ public class Table
 
     /************************************************************************************
      * Check the size of the tuple (number of elements in list) as well as the type of
-     * each value to ensure it is from the right domain. 
+     * each value to ensure it is from the right domain.
      *
      * @param t  the tuple as a list of attribute values
      * @return  whether the tuple has the right size and values that comply
      *          with the given domains
      */
     private boolean typeCheck (Comparable [] t)
-    { 
-        //  T O   B E   I M P L E M E N T E D 
+    {
+        //  T O   B E   I M P L E M E N T E D
 
         return true;
     } // typeCheck
