@@ -322,7 +322,6 @@ public class Table
         
         String attrs = "";
 
-<<<<<<< HEAD
         //  Implemented by Jared McReynolds
         
         //loop through the attribute names of the two tables and adding t t a string
@@ -335,13 +334,6 @@ public class Table
         }
         	
         return this.join(attrs, attrs, table2);
-=======
-        //  T O   B E   I M P L E M E N T E D
-
-        // FIX - eliminate duplicate columns
-        return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
-                                          ArrayUtil.concat (domain, table2.domain), key, rows);
->>>>>>> 8b3d4d199171b3944203d3c9e3acdb5720a0ca5c
     } // join
 
     /************************************************************************************
