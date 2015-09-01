@@ -7,6 +7,7 @@
 |----------------|---------------|
 | Select  | Michael Bottone |
 | Union  | Michael Bottone |
-| Project  | TBD |
+| Project  | Tiffany Chong |
 | Minus  | Ashley Bennett |
-| Join  | TBD |
+| Equi-Join  | Jared McReynolds |
+| Natural Join  | Jared McReynolds |
