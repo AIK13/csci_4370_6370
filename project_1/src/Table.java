@@ -258,31 +258,51 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
 
         //  T O   B E   I M P L E M E N T E D 
-        
-        //loop through two tables performing a cartisian product and concatenating 
-        //the tuples.
-        //
-        for(Comparable[] rows1 : tuples){
+                
+       //loop through two tables performing a cartisian product         
+        /*for(Comparable[] rows1 : tuples){
     		for(Comparable[] rows2 : table2.tuples){
     			
     			rows.add(ArrayUtil.concat(rows1, rows2));
     		}
     	}
         
-        //creating a new table from the new longer tuples
+        //concatenating tuples creating a new table from the new longer tuples
     	Table tempTable = new Table(name + count++, ArrayUtil.concat (attribute, table2.attribute),
                 ArrayUtil.concat (domain, table2.domain), key, rows);
     	
-    	tempTable.select(predicate);
-    	for(int i = 0; i < t_attrs.length; i++){
-    		
-    		if(t_attrs[i] == u_attrs[i]){
+    	//selecting the attributes that match
+    	tempTable.select(t ->{
+    		for(int i = 0; i < t_attrs.length; i++){
     			
+    			if(this.col(t_attrs[i])){
+    			
+    			}
     		}
-    	}
+    	});*/
     	
-
-        return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
+        //loop through both tables and finding the attribute names that match
+    	this.tuples.stream()
+    	.forEach(y -> table2.tuples.stream()
+    		.filter(m -> {
+    			for(int i = 0; i < t_attrs.length; i++){
+    				if(!y[this.col(t_attrs[i])].equals(m[table2.col(u_attrs[i])])){
+    					return false;
+    				}
+    			};
+    			return true;
+    		}).forEach(m -> rows.add(ArrayUtil.concat(y,m))));
+    	
+    		//appending 2 onto the duplicate attribute names
+    		String[] tempAttributeArray = table2.attribute;
+    		for(int i = 0; i < this.attribute.length; i++){
+    			for(int j = 0; j< table2.attribute.length; j++){
+    				if(this.attribute[i].equals(table2.attribute[j])){
+    					tempAttributeArray[j] = table2.attribute[j] + "2";
+    				}
+    			}
+    		}
+        return new Table (name + count++, ArrayUtil.concat (attribute, tempAttributeArray),
                                           ArrayUtil.concat (domain, table2.domain), key, rows);
     } // join
 
@@ -304,9 +324,27 @@ public class Table
 
         //  T O   B E   I M P L E M E N T E D 
 
-        // FIX - eliminate duplicate columns
-        return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
-                                          ArrayUtil.concat (domain, table2.domain), key, rows);
+        this.tuples.stream()
+    	.forEach(y -> table2.tuples.stream()
+    		.filter(m -> {
+    			for(int i = 0; i < t_attrs.length; i++){
+    				if(!y[this.col(t_attrs[i])].equals(m[table2.col(u_attrs[i])])){
+    					return false;
+    				}
+    			};
+    			return true;
+    		}).forEach(m -> rows.add(ArrayUtil.concat(y,m))));
+    		
+    		String[] tempAttributeArray = table2.attribute;
+    		for(int i = 0; i < this.attribute.length; i++){
+    			for(int j = 0; j< table2.attribute.length; j++){
+    				if(this.attribute[i].equals(table2.attribute[j])){
+    					tempAttributeArray[j] = null;
+    				}
+    			}
+    		}
+        return new Table (name + count++, ArrayUtil.concat (attribute, tempAttributeArray),
+                                          ArrayUtil.concat (domain, table2.domain), key, rows)
     } // join
 
     /************************************************************************************
