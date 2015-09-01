@@ -237,19 +237,31 @@ public class Table
         //  Implemented by Ashley Bennett
 
         for (Comparable[] tuple : tuples) {
-          boolean exists = false;
+        	
+        	boolean exists = true;
 
-          //checks if the tuple exists in table 2
-          for (Comparable[] tuple1 : table2.tuples) {
-            if (tuple == tuple1) {
-              exists = true;
-              break;
-            } //if
-          } //for
+        	//checks if the tuple exists in table 2
+        	for (Comparable[] tuple1 : table2.tuples) {
+        	  
+        		exists = true;
+        		
+        		for (int i = 0;i < tuple.length;i ++)
+        		{
+        			Comparable v1 = tuple[i];
+        			Comparable v2 = tuple1[i];
+        		  
+        			exists = exists && (v1.compareTo(v2) == 0);
+        		}
+        	  
+        		if (exists) {
+        			break;
+        		}
+        	} //for
 
-          //if the tuple doesn't exist in table 2, its added to the row list
-          if (!exists)
-            rows.add(tuple);
+        	//if the tuple doesn't exist in table 2, its added to the row list
+        	if (!exists) {
+        		rows.add(tuple);
+        	}
         } //for
 
         return new Table (name + count++, attribute, domain, key, rows);
@@ -384,6 +396,27 @@ public class Table
     {
         return name;
     } // getName
+    
+    /********************
+     * Get the length of the table
+     * 
+     * @return the number of tuples in the table
+     */
+    public int getTableLength()
+    {
+    	return tuples.size();
+    }
+    
+    /********************
+     * Get the tuple at a given index
+     * 
+     * @param index
+     * @return the tuple at the given index
+     */
+    public Comparable[] getTuple(int index)
+    {
+    	return tuples.get(index);
+    }
 
     /************************************************************************************
      * Print this table.
