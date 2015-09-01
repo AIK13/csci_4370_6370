@@ -257,30 +257,8 @@ public class Table
 
         List <Comparable []> rows = new ArrayList <> ();
 
-        //  T O   B E   I M P L E M E N T E D 
-                
-       //loop through two tables performing a cartisian product         
-        /*for(Comparable[] rows1 : tuples){
-    		for(Comparable[] rows2 : table2.tuples){
-    			
-    			rows.add(ArrayUtil.concat(rows1, rows2));
-    		}
-    	}
-        
-        //concatenating tuples creating a new table from the new longer tuples
-    	Table tempTable = new Table(name + count++, ArrayUtil.concat (attribute, table2.attribute),
-                ArrayUtil.concat (domain, table2.domain), key, rows);
-    	
-    	//selecting the attributes that match
-    	tempTable.select(t ->{
-    		for(int i = 0; i < t_attrs.length; i++){
-    			
-    			if(this.col(t_attrs[i])){
-    			
-    			}
-    		}
-    	});*/
-    	
+        //  Implemented by Jared McReynolds
+            
         //loop through both tables and finding the attribute names that match
     	this.tuples.stream()
     	.forEach(y -> table2.tuples.stream()
@@ -321,30 +299,21 @@ public class Table
         out.println ("RA> " + name + ".join (" + table2.name + ")");
 
         List <Comparable []> rows = new ArrayList <> ();
+        
+        String attrs = "";
 
-        //  T O   B E   I M P L E M E N T E D 
-
-        this.tuples.stream()
-    	.forEach(y -> table2.tuples.stream()
-    		.filter(m -> {
-    			for(int i = 0; i < t_attrs.length; i++){
-    				if(!y[this.col(t_attrs[i])].equals(m[table2.col(u_attrs[i])])){
-    					return false;
-    				}
-    			};
-    			return true;
-    		}).forEach(m -> rows.add(ArrayUtil.concat(y,m))));
-    		
-    		String[] tempAttributeArray = table2.attribute;
-    		for(int i = 0; i < this.attribute.length; i++){
-    			for(int j = 0; j< table2.attribute.length; j++){
-    				if(this.attribute[i].equals(table2.attribute[j])){
-    					tempAttributeArray[j] = null;
-    				}
-    			}
-    		}
-        return new Table (name + count++, ArrayUtil.concat (attribute, tempAttributeArray),
-                                          ArrayUtil.concat (domain, table2.domain), key, rows)
+        //  Implemented by Jared McReynolds
+        
+        //loop through the attribute names of the two tables and adding t t a string
+        for(int i = 0; i < this.attribute.length; i++){
+        	for(int j = 0; j < table2.attribute.length; j++){
+        		if(this.attribute[i].equals(table2.attribute[j])){
+        			attrs += this.attribute[i] + " ";
+        		}
+        	}
+        }
+        	
+        return this.join(attrs, attrs, table2);
     } // join
 
     /************************************************************************************
