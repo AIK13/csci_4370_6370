@@ -141,9 +141,6 @@ public class TableTest
 		Table cinema = this.createCinemaTable();
 		Table eJoin = movie.join(cinema);
 		
-		Comparable title = eJoin.getTuple(0)[eJoin.col("title")];
-		Comparable title2 = eJoin.getTuple(0)[eJoin.col("title2")];
-		
-		assertEquals(title.compareTo(title2), 0);
+		assertEquals(eJoin.getTableLength(), 2);
 	}
 }
