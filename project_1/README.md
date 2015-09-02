@@ -20,3 +20,6 @@
 
 ### Assumptions
 This is running on a machine with Java8 installed and configured.
+
+### JavaDoc
+Located in the doc folder. Open `index.html` in a web browser.
