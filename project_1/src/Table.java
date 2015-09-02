@@ -333,7 +333,7 @@ public class Table
         List <Comparable []> rows = new ArrayList <> ();
         
         String attrs = "";
-
+        
         //  Implemented by Jared McReynolds
         
         //loop through the attribute names of the two tables and adding t t a string
@@ -344,8 +344,26 @@ public class Table
         		}
         	}
         }
+        
+        // Remove duplicate columns
+        
+        // Get duplicate attrs
+        List<String> dupList = Arrays.asList(attrs.split(" "));
+        
+        // Get all attrs
+        List<String> totalList = new ArrayList<String> ();
+        totalList.addAll(Arrays.asList(this.attribute));
+        totalList.addAll(Arrays.asList(table2.attribute));
+        
+        // Remove duplicates to be left with non duplicate attrs
+        totalList.removeAll(dupList);
+        
+        // Convert list to a string
+        String addString = totalList.toString();
+        addString = addString.substring(1, addString.length() - 1).replaceAll(",", " ");
         	
-        return this.join(attrs, attrs, table2);
+        return this.join(attrs, attrs, table2).project(attrs + addString);
+        
     } // join
 
     /************************************************************************************
