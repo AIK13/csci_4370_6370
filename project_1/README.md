@@ -13,10 +13,10 @@
 | Natural Join  | Jared McReynolds |
 
 ### Usage
-Compile - make compile
-Run - make run
-Test - make test
-Clean - make clean
+- Compile - make compile
+- Run - make run
+- Test - make test
+- Clean - make clean
 
 ### Assumptions
 This is running on a machine with Java8 installed and configured.
