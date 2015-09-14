@@ -93,6 +93,11 @@ public class LinHashMap <K, V>
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
         //  T O   B E   I M P L E M E N T E D
+        
+        
+        
+        
+        
             
         return enSet;
     } // entrySet
@@ -108,6 +113,11 @@ public class LinHashMap <K, V>
 
         //  T O   B E   I M P L E M E N T E D
 
+
+
+
+
+
         return null;
     } // get
 
@@ -122,6 +132,11 @@ public class LinHashMap <K, V>
         int i = h (key);
 
         //  T O   B E   I M P L E M E N T E D
+
+
+
+
+
 
         return null;
     } // put
@@ -144,6 +159,10 @@ public class LinHashMap <K, V>
         out.println ("-------------------------------------------");
 
         //  T O   B E   I M P L E M E N T E D
+
+
+
+
 
         out.println ("-------------------------------------------");
     } // print
