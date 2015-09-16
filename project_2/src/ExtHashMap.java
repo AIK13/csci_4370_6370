@@ -80,6 +80,14 @@ public class ExtHashMap <K, V>
         hTable = new ArrayList <> ();   // for bucket storage
         dir    = new ArrayList <> ();   // for bucket access
         mod    = nBuckets = initSize;
+
+        for (int i = 0; i < nBuckets; i++) {
+            Bucket newBucket = new Bucket();
+
+            hTable.add(newBucket);
+            dir.add(newBucket);
+        } //for
+
     } // constructor
 
     /********************************************************************************
@@ -90,8 +98,13 @@ public class ExtHashMap <K, V>
     {
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-        //  T O   B E   I M P L E M E N T E D
-            
+        //  Implemented by Ashley Bennett
+        for (Bucket curr : dir) {
+            for (int i = 0; i < curr.nKeys; i++) {
+              enSet.add(new AbstractMap.SimpleEntry<K, V>(curr.key[i], curr.value[i]));
+            } //for
+        } //for
+
         return enSet;
     } // entrySet
 
