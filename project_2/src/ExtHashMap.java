@@ -118,7 +118,11 @@ public class ExtHashMap <K, V>
         int    i = h (key);
         Bucket b = dir.get (i);
 
-        //  T O   B E   I M P L E M E N T E D
+        //  Implemented by Ashley Bennett
+        for (int j = 0; j < b.nKeys; j++) {
+          if (key.equals(b.key[j]))
+              return b.value[j];
+        } //for
 
         return null;
     } // get
