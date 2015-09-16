@@ -143,7 +143,20 @@ public class ExtHashMap <K, V>
         out.println ("Hash Table (Extendable Hashing)");
         out.println ("-------------------------------------------");
 
-        //  T O   B E   I M P L E M E N T E D
+        // Implemented by Ashley Bennett
+        int bCount = 0; //number of buckets
+        int iCount = 0; //number of key-value pairs (items)
+
+        for (Bucket curr : dir) {
+            out.println("---------- Bucket #" + bCount + " ----------");
+
+            for (int i = 0; i < curr.nKeys; i++) {
+                out.print("Item #" + iCount + ": ");
+                out.println(curr.value[i].toString());
+
+                iCount++;
+            } //for
+        } //for
 
         out.println ("-------------------------------------------");
     } // print
