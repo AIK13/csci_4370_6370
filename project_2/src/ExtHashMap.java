@@ -135,10 +135,32 @@ public class ExtHashMap <K, V>
      */
     public V put (K key, V value)
     {
+        //Check that a key is given.
+        if (key == null)
+          return null;
+
         int    i = h (key);
         Bucket b = dir.get (i);
 
         //  T O   B E   I M P L E M E N T E D
+        // Implemented by Ashley Bennett
+
+        // Adds key-value pair to the bucket if there is room.
+        if (b.nKeys < SLOTS) {
+          count++;
+          b.key[b.nKeys] = key;
+          b.value[b.nKeys] = value;
+          b.nKeys++;
+          return null;
+        } // if
+
+        // Adds a bucket to the hash table, and increments mod.
+        // Put is recursively called until there is an available bucket.
+        else {
+            this.mod = this.mod++;
+            this.hTable.add(b);
+            put(key, value);
+        } // else
 
         return null;
     } // put
