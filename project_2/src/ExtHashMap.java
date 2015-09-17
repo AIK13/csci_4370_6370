@@ -183,11 +183,12 @@ public class ExtHashMap <K, V>
         out.println ("-------------------------------------------");
 
         // Implemented by Ashley Bennett
-        int bCount = 0; //number of buckets
+        int bCount = 1; //number of buckets
         int iCount = 0; //number of key-value pairs (items)
 
         for (Bucket curr : dir) {
-            out.println("---------- Bucket #" + bCount + " ----------");
+            out.println("\nBucket #" + bCount + ":");
+            bCount++;
 
             for (int i = 0; i < curr.nKeys; i++) {
                 out.print("Item #" + iCount + ": ");
