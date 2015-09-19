@@ -240,8 +240,6 @@ public class BpTreeMap <K extends Comparable <K>, V>
         } // for
         return (n.isLeaf) ? null : find (key, (Node) n.ref [n.nKeys]);
     } // find
-
-    private Node stackNode;
     
     /********************************************************************************
      * Recursive helper function for inserting a key in B+trees.
@@ -434,7 +432,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
         int totKeys = 100;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
         
-        for (int i = 1; i < totKeys; i += 2)
+        for (int i = 1; i < totKeys; i += 1)
         {
         	bpt.put (i, i * i);
         	out.println("Putting " + i);
