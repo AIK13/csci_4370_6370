@@ -61,6 +61,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
     /** The counter for the number nodes accessed (for performance testing).
      */
     private int count = 0;
+    
+    private int treeSize = 0;
 
     /********************************************************************************
      * Construct an empty B+Tree map.
@@ -116,6 +118,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     public V put (K key, V value)
     {
         insert (key, value, root, null);
+        treeSize++;
         return null;
     } // put
 
@@ -196,11 +199,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public int size ()
     {
-        int sum = 0;
-
-        //  T O   B E   I M P L E M E N T E D
-
-        return  sum;
+        return treeSize;
     } // size
 
     /********************************************************************************
@@ -432,7 +431,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     public static void main (String [] args)
     {
         BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
-        int totKeys = 1000;
+        int totKeys = 100;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
         
         for (int i = 1; i < totKeys; i += 2)
