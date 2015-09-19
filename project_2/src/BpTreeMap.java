@@ -44,12 +44,12 @@ public class BpTreeMap <K extends Comparable <K>, V>
         {
             isLeaf = _isLeaf;
             nKeys  = 0;
-            key    = (K []) Array.newInstance (classK, ORDER - 1);
+            key    = (K []) Array.newInstance (classK, ORDER);
             if (isLeaf) {
                 //ref = (V []) Array.newInstance (classV, ORDER);
-                ref = new Object [ORDER];
+                ref = new Object [ORDER + 1];
             } else {
-                ref = (Node []) Array.newInstance (Node.class, ORDER);
+                ref = (Node []) Array.newInstance (Node.class, ORDER + 1);
             } // if
         } // constructor
     } // Node inner class
@@ -125,8 +125,23 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public K firstKey () 
     {
+    	/*int count = 0;
+    	K smallestKey = root.key[0];
+    	if(root.isLeaf == true){
+    		for(int i =0; i < n.nKeys; i++){
+    			if(n.key[i] < smallestKey ){
+    				smallestKey = n.key[i];
+    				
+    			}
+    		}
+    		return smallestKey;
+    	}
+    	
+    	firstKey();
+    	
+    
         //  T O   B E   I M P L E M E N T E D
-
+*/
         return null;
     } // firstKey
 
@@ -253,12 +268,18 @@ public class BpTreeMap <K extends Comparable <K>, V>
             wedge (key, ref, n, n.nKeys);
         } else {
             Node sib = split (key, ref, n);
+            K middleKey = sib.key[0];
+            
+            
+            
+            
 
         //  T O   B E   I M P L E M E N T E D
 
         } // if
     } // insert
-
+    
+    
     /********************************************************************************
      * Wedge the key-ref pair into node n.
      * @param key  the key to insert
@@ -266,7 +287,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
      * @param n    the current node
      * @param i    the insertion position within node n
      */
-    private void wedge (K key, V ref, Node n, int i)
+    private void wedge (K key, Object ref, Node n, int i)
     {
         for (int j = n.nKeys; j > i; j--) {
             n.key [j] = n.key [j - 1];
@@ -276,6 +297,10 @@ public class BpTreeMap <K extends Comparable <K>, V>
         n.ref [i] = ref;
         n.nKeys++;
     } // wedge
+    
+    
+   
+
 
     /********************************************************************************
      * Split node n and return the newly created node.
@@ -283,14 +308,78 @@ public class BpTreeMap <K extends Comparable <K>, V>
      * @param ref  the value/node to insert
      * @param n    the current node
      */
-    private Node split (K key, V ref, Node n)
+    private Node split (K key, Object ref, Node n)
     {
-        out.println ("split not implemented yet");
+        //out.println ("split not implemented yet");
+    	
+    	//loop through node to wedge in new key before splitting
+    	if(key != null){
+    		for(int i = 0; i < n.nKeys; i++ ){
+    			if(key.compareTo(n.key[i]) < 0){
+    				wedge(key, ref, n, i);
+    			}
+    		}
+    	}
+        
+        //split on the middle key
+        int middleIndex = (int)(ORDER/2);
+        K middleKey = n.key[middleIndex];
+        if(!n.isLeaf){
+        	n.key[middleIndex] = null;
+        }
+        
+        //create new nodes for the split
+        Node newParent = new Node(false);
+        Node firstChild = new Node(true);
+        Node secondChild = new Node(true);
+        
+       
+        //filling new children with keys and values
+        
+        for(int i = 0; i < n.nKeys; i++){
+        	if(n.key[i] == null){
+        		firstChild.ref[i] = n.ref[i];
+        		firstChild.nKeys++;
+        		break;
+        	}
+        	if(n.key[i].compareTo(middleKey) <= 0){
+        		wedge(n.key[i], n.ref[i], firstChild, firstChild.nKeys);
+        	}
+        	else{
+        		wedge(n.key[i], n.ref[i], secondChild, secondChild.nKeys);
+        	}
+        }
+        
+        if(!n.isLeaf){
+        	secondChild.ref[secondChild.nKeys] = n.ref[n.nKeys];
+        }
+        else{
+        	//TODO add child reference
+        }
+        
+        //setting up new parent node
+        newParent.key[0] = middleKey;
+        newParent.ref[0] = firstChild;
+        newParent.ref[1] = secondChild;
+        
+        
 
-        //  T O   B E   I M P L E M E N T E D
-
-        return null;
+        return newParent;
     } // split
+    
+    /**
+     * Finds the middle key between all keys including soon to be inserted key
+     * @param n
+     * @param key
+     * @return
+     */
+    private K middle(Node n, K key){
+    	K middle = n.key[0];
+    	for(int i = 1; i <= n.nKeys; i++){
+    		
+    	}
+    	return middle;
+    }
 
     /********************************************************************************
      * The main method used for testing.
