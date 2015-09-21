@@ -92,10 +92,10 @@ public class LinHashMap <K, V>
     {
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-       for(int i=0; i<hTable.size(); i++){ // loop through bucket
+       for( int i=0; i<hTable.size(); i++ ){ // loop through bucket
               Bucket temp = hTable.get(i);
-              for(int j=0; j<temp.nKeys; j++){ // loop through values and keys
-                     enSet.add(new AbstractMap.SimpleEntry<>(temp.key[j],temp.value[j]));
+              for( int j=0; j<temp.nKeys; j++ ){ // loop through values and keys
+                     enSet.add(new AbstractMap.SimpleEntry<>( temp.key[j],temp.value[j]) );
                      //add keys and values to enSet (hashSet)
               }
        } // end for loop
@@ -109,13 +109,26 @@ public class LinHashMap <K, V>
      */
     public V get (Object key)
     {
-        int i = h (key);
+       int i = h (key);
+       if(i<split){
+              i=h2(key);
+       }
+       Bucket temp = hTable.get(i);
+       if( temp.nKeys==0 ){ // check if bucket is empty
+              return null;
+       }
+       else{
+           while(temp!=null){
+                  for( int i=0; i<temp.nKeys; i++ ){
+                         if( key.equals(temp.key[i]) ){
+                                return temp.value[i];
+                         } // end if
+                  } // if for loop
+                  temp = temp.next; // if key not found, try next
+           } // end while
+       } // end else
 
-       
-
-
-
-        return null;
+        return null; 
     } // get
 
     /********************************************************************************
@@ -126,15 +139,22 @@ public class LinHashMap <K, V>
      */
     public V put (K key, V value)
     {
-        int i = h (key);
-
-        //  T O   B E   I M P L E M E N T E D
-
-
-
-
-
-
+       int i = h (key);
+       if(i<split){
+              i=h2(key);
+       }
+       Bucket temp = hTable.get(i);
+       if( temp.nKeys < SLOTS ){ // simple insert, no split
+              temp.key[temp.nKeys] = key;
+              temp.value[temp.nKeys] = value;
+              temp.nKeys++;
+       } // end if
+       else{ // split required
+       
+       // more later
+              
+       } // end else
+       
         return null;
     } // put
 
@@ -152,15 +172,45 @@ public class LinHashMap <K, V>
      */
     private void print ()
     {
-        out.println ("Hash Table (Linear Hashing)");
-        out.println ("-------------------------------------------");
+       out.println ("Hash Table (Linear Hashing)");
+       out.println ("-------------------------------------------");
 
-        //  T O   B E   I M P L E M E N T E D
-
-
-
-
-
+       for(int i=0; i<hTable.size(); i++){
+              Bucket temp = hTable.get(x);
+              boolean chain = false;
+              if( temp.next!=null ){
+                     chain = true; // chain esists if there is a next element
+              }
+              if(chain){ // printing chain of buckets
+                     out.print("[ ");
+                     for( int j=0; j<SLOTS; j++ ){
+                            out.print(temp.key[j]);
+                            if(SLOTS!=j+1){
+                                   out.print(", ");
+                            } // end if
+                            else{
+                                   out.print(" ] -->");
+                            } // end else
+                     } // end for loop
+                     out.print("[ ");
+                     for( int j=0; j<SLOTS; j++ ){ // last bucket
+                            out.print(temp.key[j]);
+                            if(SLOTS!=j+1){
+                                   out.print(" ]");
+                            } // end if
+                     } // end for loop
+              } // end if chain
+              else{
+                     out.print("[ ");
+                     for( int j=0; j<SLOTS; j++ ){ // only bucket
+                            out.print(temp.key[j]);
+                            if(SLOTS!=j+1){
+                                   out.print(", ");
+                            } // end if
+                     } // end for loop
+                     out.print(" ]");
+              } // end else
+       } // end first for loop
         out.println ("-------------------------------------------");
     } // print
 
