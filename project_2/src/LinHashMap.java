@@ -92,13 +92,13 @@ public class LinHashMap <K, V>
     {
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-        //  T O   B E   I M P L E M E N T E D
-        
-        
-        
-        
-        
-            
+       for(int i=0; i<hTable.size(); i++){ // loop through bucket
+              Bucket temp = hTable.get(i);
+              for(int j=0; j<temp.nKeys; j++){ // loop through values and keys
+                     enSet.add(new AbstractMap.SimpleEntry<>(temp.key[j],temp.value[j]));
+                     //add keys and values to enSet (hashSet)
+              }
+       } // end for loop
         return enSet;
     } // entrySet
 
@@ -111,10 +111,7 @@ public class LinHashMap <K, V>
     {
         int i = h (key);
 
-        //  T O   B E   I M P L E M E N T E D
-
-
-
+       
 
 
 
