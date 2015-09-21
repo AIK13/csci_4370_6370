@@ -126,26 +126,26 @@ public class BpTreeMap <K extends Comparable <K>, V>
      * Return the first (smallest) key in the B+Tree map.
      * @return  the first key in the B+Tree map.
      */
+    
+ 
     public K firstKey () 
     {
-    	/*int count = 0;
-    	K smallestKey = root.key[0];
-    	if(root.isLeaf == true){
-    		for(int i =0; i < n.nKeys; i++){
-    			if(n.key[i] < smallestKey ){
-    				smallestKey = n.key[i];
-    				
-    			}
-    		}
+    	
+    	Node n = root;
+    	K smallestKey = n.key[0];
+    	    	
+    	//if node is a leaf return the smallest key(should be the first)
+    	if(n.isLeaf){
     		return smallestKey;
     	}
     	
-    	firstKey();
-    	
-    
-        //  T O   B E   I M P L E M E N T E D
-*/
-        return null;
+    	//if node is not a leaf then set n to first node referenced by the current node
+    	while(!n.isLeaf){
+    	  n = (Node)n.ref[0];
+    	  smallestKey = n.key[0];
+    	}
+    	    		
+    	return smallestKey;
     } // firstKey
 
     /********************************************************************************
@@ -154,9 +154,43 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public K lastKey () 
     {
-        //  T O   B E   I M P L E M E N T E D
+    	Node n = root;
+    	K largestKey = n.key[n.key.length - 2];
+    	
+    	if(n.isLeaf){
+    		for(int i = n.key.length - 2; i >= 0; i--){
+    			if(n.key[i] != null){
+    				largestKey = n.key[i];
+    				return largestKey;
+    			}
+    		}
+			
+		}
+    	while(!n.isLeaf){
+    		
+    		for(int i = n.nKeys - 1 ; i >= 0; i--){
+    			if(n.key[i]!= null){
+    				n = (Node)n.ref[i + 1];
+    				i = n.nKeys;
+    				if(n.isLeaf){
+    					for(int j = n.nKeys; j >= 0; j-- ){
+    						if(n.key[j]!= null){
+    							largestKey = n.key[j];
+    							break;
+    						}
+    					}
+    				break;
+    				
+    				}
+    			}
+    		}
+    		
+    		
+    	}
+    		
+    	return largestKey;
 
-        return null;
+        
     } // lastKey
 
     /********************************************************************************
@@ -466,6 +500,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of nodes accessed = " + bpt.count / (double) totKeys);
+       
+       
     } // main
 
 } // BpTreeMap class
