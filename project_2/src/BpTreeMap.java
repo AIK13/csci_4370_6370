@@ -165,9 +165,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public SortedMap <K,V> headMap (K toKey)
     {
-        //  T O   B E   I M P L E M E N T E D
-
-        return null;
+        return subMap(null, toKey);
     } // headMap
 
     /********************************************************************************
@@ -176,9 +174,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public SortedMap <K,V> tailMap (K fromKey)
     {
-        //  T O   B E   I M P L E M E N T E D
-
-        return null;
+    	return subMap(fromKey, null);
     } // tailMap
 
     /********************************************************************************
@@ -188,9 +184,29 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public SortedMap <K,V> subMap (K fromKey, K toKey)
     {
-        //  T O   B E   I M P L E M E N T E D
-
-        return null;
+    	// Create empty submap
+    	BpTreeMap <K, V> newMap = new BpTreeMap <> (classK, classV);
+    	
+    	// Set start and end keys
+    	K first = fromKey == null ? firstKey() : fromKey;
+    	K second = toKey == null ? lastKey() : toKey;
+    	
+    	// Get a list of all entries
+    	Set<Entry<K, V>> entries = this.entrySet();
+    	
+    	// Loop through all entries
+    	for (Entry<K, V> e : entries)
+    	{
+    		// If the entry is within the parameters
+    		if (e.getKey().compareTo(first) >= 0 && 
+    				e.getKey().compareTo(second) <= 0)
+    		{
+    			// Add the entry to the subtree
+    			newMap.put(e.getKey(), e.getValue());
+    		}
+    	}
+    	
+        return newMap;
     } // subMap
 
     /********************************************************************************
