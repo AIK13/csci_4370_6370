@@ -479,10 +479,10 @@ public class BpTreeMap <K extends Comparable <K>, V>
     public static void main (String [] args)
     {
         BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
-        int totKeys = 100;
+        int totKeys = 10;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
         
-        for (int i = 1; i < totKeys; i += 1)
+        for (int i = 1; i < totKeys; i += 2)
         {
         	bpt.put (i, i * i);
         	out.println("Putting " + i);
@@ -500,8 +500,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of nodes accessed = " + bpt.count / (double) totKeys);
-       
-       
+        out.println(bpt.firstKey());
+        out.println(bpt.lastKey());
     } // main
 
 } // BpTreeMap class
