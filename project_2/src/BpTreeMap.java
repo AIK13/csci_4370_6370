@@ -93,7 +93,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     {
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-        //  T O   B E   I M P L E M E N T E D
+        
             
         return enSet;
     } // entrySet
@@ -163,8 +163,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     				largestKey = n.key[i];
     				return largestKey;
     			}
-    		}
-			
+    		}		
 		}
     	while(!n.isLeaf){
     		
@@ -179,8 +178,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     							break;
     						}
     					}
-    				break;
-    				
+    				break;    				
     				}
     			}
     		}
@@ -190,7 +188,6 @@ public class BpTreeMap <K extends Comparable <K>, V>
     		
     	return largestKey;
 
-        
     } // lastKey
 
     /********************************************************************************
