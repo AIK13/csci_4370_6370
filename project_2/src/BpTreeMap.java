@@ -277,6 +277,9 @@ public class BpTreeMap <K extends Comparable <K>, V>
     @SuppressWarnings("unchecked")
     private void print (Node n, int level)
     {
+    	out.println ("BpTreeMap");
+        out.println ("-------------------------------------------");
+
         for (int j = 0; j < level; j++) out.print ("\t");
         out.print ("[ . ");
         for (int i = 0; i < n.nKeys; i++) out.print (n.key [i] + " . ");
@@ -284,6 +287,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
         if ( ! n.isLeaf) {
             for (int i = 0; i <= n.nKeys; i++) print ((Node) n.ref [i], level + 1);
         } // if
+
+        out.println ("-------------------------------------------");
     } // print
 
     /********************************************************************************
@@ -491,36 +496,16 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     public static void main (String [] args)
     {
-        BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
-        int totKeys = 20;
+    	BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
+        int totKeys = 10;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
-        
-        for (int i = 1; i < totKeys; i += 1)
-        {
-        	bpt.put (i, i * i);
-        	out.println("Putting " + i);
-        }
-        
-        out.println();
-        out.println ("Printing BpTreeMap...");
-        out.println ("-------------------------------------------");
+        for (int i = 1; i < totKeys; i += 2) bpt.put (i, i * i);
         bpt.print (bpt.root, 0);
-        out.println ("-------------------------------------------");
-        out.println();
-        
         for (int i = 0; i < totKeys; i++) {
             out.println ("key = " + i + " value = " + bpt.get (i));
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of nodes accessed = " + bpt.count / (double) totKeys);
-        
-        for (Map.Entry e : bpt.entrySet())
-        {
-        	out.println("[" + e.getKey() + ", " + e.getValue() + "]");
-        }
-
-        out.println(bpt.firstKey());
-        out.println(bpt.lastKey());
     } // main
 
 } // BpTreeMap class
