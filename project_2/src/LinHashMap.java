@@ -122,9 +122,9 @@ public class LinHashMap <K, V>
     	if( temp.nKeys==0 ){ // check if bucket is empty
     		return null;
     	}
-    	else{
+    	else{ // get value from given key
     	   while(temp!=null){
-    		   count++;
+    		   count++; // add to bucket counter
     		   for( int j=0; j<temp.nKeys; j++ ){
     			   if( key.equals(temp.key[j]) ){
     				   return temp.value[j];
@@ -167,7 +167,7 @@ public class LinHashMap <K, V>
     		   temp.key[temp.nKeys] = key;
     		   temp.value[temp.nKeys] = value;
     		   temp.nKeys++;
-    	   }else{
+    	   }else{ // add to new bucket
     		   temp.next = new Bucket(null);
     		   temp = temp.next;
     		   temp.key[temp.nKeys]=key;
@@ -179,7 +179,7 @@ public class LinHashMap <K, V>
     	   Bucket newTemp = new Bucket(null); // new bucket
     	   temp = hTable.get(split); //the bucket to split
     	   for(int m = 0; m<temp.nKeys; m++){
-    		   if(i == split){
+    		   if(i == split){ // splitting time
     			   if(replaceSplit.next ==null){
     				   replaceSplit.next = new Bucket(null);
     				   replaceSplit.next = replaceSplit;
@@ -188,7 +188,7 @@ public class LinHashMap <K, V>
     			   replaceSplit.value[replaceSplit.nKeys] = temp.value[m];
     			   temp.nKeys++;
     		   } // end if
-    		   else{
+    		   else{ // new bucket time
     			   if(newTemp.next==null){
     				   newTemp.next = new Bucket(null);
     				   newTemp = newTemp.next;
