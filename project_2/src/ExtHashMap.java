@@ -80,6 +80,14 @@ public class ExtHashMap <K, V>
         hTable = new ArrayList <> ();   // for bucket storage
         dir    = new ArrayList <> ();   // for bucket access
         mod    = nBuckets = initSize;
+
+        for (int i = 0; i < nBuckets; i++) {
+            Bucket newBucket = new Bucket();
+
+            hTable.add(newBucket);
+            dir.add(newBucket);
+        } //for
+
     } // constructor
 
     /********************************************************************************
@@ -90,8 +98,13 @@ public class ExtHashMap <K, V>
     {
         Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-        //  T O   B E   I M P L E M E N T E D
-            
+        //  Implemented by Ashley Bennett
+        for (Bucket curr : dir) { // iterates through buckets in the directory
+            for (int i = 0; i < curr.nKeys; i++) { //iterates through keys in each bucket
+              enSet.add(new AbstractMap.SimpleEntry<K, V>(curr.key[i], curr.value[i]));
+            } //for
+        } //for
+
         return enSet;
     } // entrySet
 
@@ -105,7 +118,12 @@ public class ExtHashMap <K, V>
         int    i = h (key);
         Bucket b = dir.get (i);
 
-        //  T O   B E   I M P L E M E N T E D
+        // Implemented by Ashley Bennett
+        // Iterates through keys it is found, and returns the value associated with it
+        for (int j = 0; j < b.nKeys; j++) {
+          if (key.equals(b.key[j]))
+              return b.value[j];
+        } //for
 
         return null;
     } // get
@@ -118,10 +136,31 @@ public class ExtHashMap <K, V>
      */
     public V put (K key, V value)
     {
+        //Check that a key is given.
+        if (key == null)
+          return null;
+
         int    i = h (key);
         Bucket b = dir.get (i);
 
-        //  T O   B E   I M P L E M E N T E D
+        // Implemented by Ashley Bennett
+
+        // Adds key-value pair to the bucket if there is room.
+        if (b.nKeys < SLOTS) {
+          count++;
+          b.key[b.nKeys] = key;
+          b.value[b.nKeys] = value;
+          b.nKeys++;
+          return null;
+        } // if
+
+        // Adds a bucket to the hash table, and increments mod.
+        // Put is recursively called until there is an available bucket.
+        else {
+            this.mod = this.mod++;
+            this.hTable.add(b);
+            put(key, value);
+        } // else
 
         return null;
     } // put
@@ -140,10 +179,24 @@ public class ExtHashMap <K, V>
      */
     private void print ()
     {
-        out.println ("Hash Table (Extendable Hashing)");
+        out.println ("Hash Table");
         out.println ("-------------------------------------------");
 
-        //  T O   B E   I M P L E M E N T E D
+        // Implemented by Ashley Bennett
+        int bCount = 1; //number of buckets
+        int iCount = 0; //number of key-value pairs (items)
+
+        for (Bucket curr : dir) {
+            out.println("\nBucket #" + bCount + ":");
+            bCount++;
+
+            for (int i = 0; i < curr.nKeys; i++) {
+                out.print("Item #" + iCount + ": ");
+                out.println(curr.value[i].toString());
+
+                iCount++;
+            } //for
+        } //for
 
         out.println ("-------------------------------------------");
     } // print
@@ -164,6 +217,7 @@ public class ExtHashMap <K, V>
      */
     public static void main (String [] args)
     {
+        out.println("Test One\n");
         ExtHashMap <Integer, Integer> ht = new ExtHashMap <> (Integer.class, Integer.class, 11);
         int nKeys = 30;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);
@@ -174,7 +228,28 @@ public class ExtHashMap <K, V>
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of buckets accessed = " + ht.count / (double) nKeys);
+
+        /********** Additional Testing ************/
+        out.println("Test Two\n");
+        ExtHashMap <Integer, Integer> test = new ExtHashMap <> (Integer.class, Integer.class, 12);
+        nKeys = 40;
+        if (args.length == 1) nKeys = Integer.valueOf (args [0]);
+        for (int i = 0; i < nKeys; i++)
+          test.put(i, i*i*i);
+
+        for (int i = 0; i < nKeys; i++)
+          out.println("Key = " + i + " Value = " + test.get(i));
+
+        out.println ("-------------------------------------------");
+        out.println ("Average number of buckets accessed = " + test.count / (double) nKeys);
+
+        out.print("\n\nEntry Set" + "\n-------------------------------------------" + "\n\n");
+        for (Map.Entry<Integer, Integer> entry : test.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + " Value = " + entry.getValue());
+        }
+
+        out.println("\n");
+        test.print();
     } // main
 
 } // ExtHashMap class
-
