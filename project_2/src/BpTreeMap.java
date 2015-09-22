@@ -412,10 +412,6 @@ public class BpTreeMap <K extends Comparable <K>, V>
         n.ref [i] = ref;
         n.nKeys++;
     } // wedge
-    
-    
-   
-
 
     /********************************************************************************
      * Split node n and return the newly created node.
