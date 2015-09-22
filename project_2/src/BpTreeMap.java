@@ -94,7 +94,11 @@ public class BpTreeMap <K extends Comparable <K>, V>
         return subSet(root);
     } // entrySet
 
-    
+    /**
+     * Creates a Set of keys and values from the leaves of the tree
+     * @param n
+     * @return the set of values of tree rooted at n
+     */
     public Set <Map.Entry <K, V>> subSet (Node n)
     {
     	if (n.isLeaf)
@@ -177,6 +181,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
     	Node n = root;
     	K largestKey = n.key[n.key.length - 2];
     	
+    	//if node is a leaf then loop through keys in reverse looking 
+    	//for first non-null value
     	if(n.isLeaf){
     		for(int i = n.key.length - 2; i >= 0; i--){
     			if(n.key[i] != null){
@@ -185,8 +191,9 @@ public class BpTreeMap <K extends Comparable <K>, V>
     			}
     		}		
 		}
+    	//if node is not a leaf loop through keys in reverse and set n to 
+    	//the last reference 
     	while(!n.isLeaf){
-    		
     		for(int i = n.nKeys - 1 ; i >= 0; i--){
     			if(n.key[i]!= null){
     				n = (Node)n.ref[i + 1];
@@ -202,12 +209,8 @@ public class BpTreeMap <K extends Comparable <K>, V>
     				}
     			}
     		}
-    		
-    		
     	}
-    		
     	return largestKey;
-
     } // lastKey
 
     /********************************************************************************
@@ -322,30 +325,40 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     private void insert (K key, V ref, Node n, Node p)
     {
+    	//if node is a leaf then wedge into its proper place in n.key[]
         if (n.isLeaf)
         {
+        	//if node does not have max number of keys then loop through n.key        	
         	if (n.nKeys < ORDER - 1) {
                 for (int i = 0; i < n.nKeys; i++) {
                     K k_i = n.key [i];
+                    //if key is less then k_i wedge in key
                     if (key.compareTo(k_i) < 0) {
                         wedge (key, ref, n, i);
                         return;
+                    //if key is equal to k_i then notify as duplicate
                     } else if (key.equals (k_i)) {
                         out.println ("BpTreeMap:insert: attempt to insert duplicate key = " + key);
                     }
                 }
                 wedge (key, ref, n, n.nKeys);
-            } else {
+            }
+        	//if node has max number of keys then split it 
+        	else {
                 Node sib = split (key, ref, n);
                 parentInsert(sib, p);
             }
         }
+        
+        //if node is not leaf 
         else
         {
         	boolean didInsert = false;
+        	//loop through keys 
         	for (int i = 0;i < n.nKeys;i ++)
         	{
         		K nKey = n.key[i];
+        		//insert if key is less then nKey, set didInsert to true
         		if (key.compareTo(nKey) < 0)
         		{
         			insert (key, ref, (Node) n.ref[i], n);
@@ -354,35 +367,46 @@ public class BpTreeMap <K extends Comparable <K>, V>
         		}
         	}
         	
+        	//if node has not been inserted then insert 
         	if (!didInsert) {
         		insert (key, ref, (Node) n.ref[n.nKeys], n);
         	}
         	
+        	//if node is full then split it 
         	if (n.nKeys > ORDER - 1)
         	{
         		Node sib = split (null, null, n);
                 parentInsert(sib, p);
-        	}
-        	
+        	}        	
         }
     } // insert
     
+    /******************************************************************************
+     * Creates a new prent node with a right and left child 
+     * @param sib  the sibling node
+     * @param p  the parent node
+     */
     private void parentInsert (Node sib, Node p)
     {
+    	//if node p is the root then set it equal to sib
     	if (p == null)
     	{
     		root = sib;
     	}
+    	//if not the root then create two new nodes 
     	else
     	{
 	    	Node newLeft = (Node) sib.ref[0];
 	        Node newRight = (Node) sib.ref[1];
+	        //create variable middle to the key where to split the node
 	        K middle = sib.key[0];
 	        
 	        boolean didWedge = false;
+	        //loop through p.key[] 
 	        for (int i = 0;i < p.nKeys;i ++)
 	        {
 	        	K pKey = p.key[i];
+	        	//wedge middle in its appropriate place
 	        	if (middle.compareTo(pKey) < 0)
 	        	{
 	        		wedge (middle, newLeft, p, i);
@@ -392,6 +416,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
 	        	}
 	        }
 	        
+	        //wedge node if it has not been wedged yet
 	        if (!didWedge)
 	        {
 	        	wedge (middle, newLeft, p, p.nKeys);
@@ -458,7 +483,6 @@ public class BpTreeMap <K extends Comparable <K>, V>
         Node secondChild = new Node(n.isLeaf);
        
         //filling new children with keys and values
-        
         for(int i = 0; i < n.nKeys; i++){
         	if(n.key[i] == null){
         		firstChild.ref[i] = n.ref[i];

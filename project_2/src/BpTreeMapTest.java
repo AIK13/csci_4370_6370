@@ -11,11 +11,17 @@ import org.junit.Test;
 
 public class BpTreeMapTest {
 	
+	/***********************************************************************
+	 * This method creates a new B+ tree for use in the unit testing
+	 * @return the newly created tree
+	 */
 	public BpTreeMap createTree(){
 		
+		//create tree
 		BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
         int totKeys = 10;
-                
+        
+        //loop through adding keys and values to the tree        
         for (int i = 1; i <= totKeys; i ++)
         {
         	bpt.put (i, i * i);
@@ -24,6 +30,9 @@ public class BpTreeMapTest {
         return bpt;
 	}
 
+	/*************************************************************************
+	 * Tests the firstKey method
+	 */
 	@Test
 	public void testFirstKey() {
 		
@@ -32,7 +41,9 @@ public class BpTreeMapTest {
 		assertEquals(1, (int)tree.firstKey() );
 	}
 	
-	
+	/*************************************************************************
+	 * Tests the last key method
+	 */
 	@Test
 	public void testLastKey() {
 		
@@ -42,6 +53,9 @@ public class BpTreeMapTest {
 		
 	}
 	
+	/**************************************************************************
+	 * Tests the entrySet method 
+	 */
 	@Test
 	public void testEntrySet()
 	{
@@ -50,7 +64,11 @@ public class BpTreeMapTest {
 		
 		assertEquals(10, set.size());
 	}
-
+	
+	/***************************************************************************
+	 * Tests the subMap method which is used in the head and tail map methods
+	 * as well
+	 */
 	@Test
 	public void testSubMap()
 	{
@@ -62,6 +80,9 @@ public class BpTreeMapTest {
 		assertEquals(null, subTree.get(8));
 	}
 	
+	/***************************************************************************
+	 * Tests the size method
+	 */
 	@Test
 	public void testSize()
 	{
