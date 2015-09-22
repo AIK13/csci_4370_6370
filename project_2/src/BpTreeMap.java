@@ -90,14 +90,34 @@ public class BpTreeMap <K extends Comparable <K>, V>
      * @return  the set view of the map
      */
     public Set <Map.Entry <K, V>> entrySet ()
-    {
-        Set <Map.Entry <K, V>> enSet = new HashSet <> ();
-
-        //  T O   B E   I M P L E M E N T E D
-            
-        return enSet;
+    {       
+        return subSet(root);
     } // entrySet
 
+    
+    public Set <Map.Entry <K, V>> subSet (Node n)
+    {
+    	if (n.isLeaf)
+    	{
+    		Set <Map.Entry <K, V>> leafSet = new HashSet <> ();
+    		for (int i = 0;i < n.nKeys;i ++)
+    		{
+    			leafSet.add(new AbstractMap.SimpleEntry<K, V>(n.key[i], (V) n.ref[i]));
+    		}
+    		return leafSet;
+    	}
+    	else
+    	{
+    		Set <Map.Entry <K, V>> childSet = new HashSet <> ();
+    		for (Node c : (Node[]) n.ref)
+    		{
+    			if (c != null) {
+    				childSet.addAll(subSet(c));
+    			}
+    		}
+    		return childSet;
+    	}
+    }
     /********************************************************************************
      * Given the key, look up the value in the B+Tree map.
      * @param key  the key used for look up
@@ -445,7 +465,7 @@ public class BpTreeMap <K extends Comparable <K>, V>
     public static void main (String [] args)
     {
         BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
-        int totKeys = 100;
+        int totKeys = 20;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
         
         for (int i = 1; i < totKeys; i += 1)
@@ -466,6 +486,11 @@ public class BpTreeMap <K extends Comparable <K>, V>
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of nodes accessed = " + bpt.count / (double) totKeys);
+        
+        for (Map.Entry e : bpt.entrySet())
+        {
+        	out.println("[" + e.getKey() + ", " + e.getValue() + "]");
+        }
     } // main
 
 } // BpTreeMap class
