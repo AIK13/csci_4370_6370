@@ -85,7 +85,8 @@ public class Table
         domain    = _domain;
         key       = _key;
         tuples    = new ArrayList <> ();
-        index     = new TreeMap <> ();       // also try BPTreeMap, LinHashMap or ExtHashMap
+        index     = new BpTreeMap <KeyType, Comparable []> (KeyType.class, Comparable [].class);      // also try BPTreeMap, LinHashMap or ExtHashMap
+        
     } // constructor
 
     /************************************************************************************
