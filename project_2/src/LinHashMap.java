@@ -1,4 +1,3 @@
-
 /************************************************************************************
  * @file LinHashMap.java
  *
@@ -82,6 +81,12 @@ public class LinHashMap <K, V>
         hTable = new ArrayList <> ();
         mod1   = initSize;
         mod2   = 2 * mod1;
+        
+        // adding empty buckets to hash table
+        for(int i=0; i<initSize; i++){
+        	hTable.add(new Bucket(null));
+        }
+        
     } // constructor
 
     /********************************************************************************
@@ -90,11 +95,16 @@ public class LinHashMap <K, V>
      */
     public Set <Map.Entry <K, V>> entrySet ()
     {
-        Set <Map.Entry <K, V>> enSet = new HashSet <> ();
+    	Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
-        //  T O   B E   I M P L E M E N T E D
-            
-        return enSet;
+    	for( int i=0; i<hTable.size(); i++ ){ // loop through bucket
+    		Bucket temp = hTable.get(i);
+    		for( int j=0; j<temp.nKeys; j++ ){ // loop through values and keys
+    			enSet.add(new AbstractMap.SimpleEntry<>( temp.key[j],temp.value[j]) );
+    			//add keys and values to enSet (hashSet)
+    		}
+    	} // end for loop
+    	return enSet;
     } // entrySet
 
     /********************************************************************************
@@ -104,11 +114,27 @@ public class LinHashMap <K, V>
      */
     public V get (Object key)
     {
-        int i = h (key);
+    	int i = h (key);
+    	if(i<split){
+    		i=h2(key);
+    	}
+    	Bucket temp = hTable.get(i);
+    	if( temp.nKeys==0 ){ // check if bucket is empty
+    		return null;
+    	}
+    	else{ // get value from given key
+    	   while(temp!=null){
+    		   count++; // add to bucket counter
+    		   for( int j=0; j<temp.nKeys; j++ ){
+    			   if( key.equals(temp.key[j]) ){
+    				   return temp.value[j];
+    			   } // end if
+    		   } // if for loop
+    		   temp = temp.next; // if key not found, try next
+    	   } // end while
+    	} // end else
 
-        //  T O   B E   I M P L E M E N T E D
-
-        return null;
+    	return null; 
     } // get
 
     /********************************************************************************
@@ -119,10 +145,69 @@ public class LinHashMap <K, V>
      */
     public V put (K key, V value)
     {
-        int i = h (key);
+       int i = h (key);
+       if(i<split){
+              i=h2(key);
+       }
+       Bucket temp = hTable.get(i);
+       if( temp.nKeys < SLOTS ){ // simple insert, no split
+              temp.key[temp.nKeys] = key;
+              temp.value[temp.nKeys] = value;
+              temp.nKeys++;
+       } // end if
+       
+       else{ // split required
+    	   // out.println("SPLIT HERE!"); // testing for split
+    	   hTable.add(new Bucket(null));
+    	   while(temp.next != null){
+    		   temp = temp.next;
+    	   }
+    	   //check in the last bucket of the chain
+    	   if(temp.nKeys < SLOTS){
+    		   temp.key[temp.nKeys] = key;
+    		   temp.value[temp.nKeys] = value;
+    		   temp.nKeys++;
+    	   }else{ // add to new bucket
+    		   temp.next = new Bucket(null);
+    		   temp = temp.next;
+    		   temp.key[temp.nKeys]=key;
+    		   temp.value[temp.nKeys]=value;
+    		   temp.nKeys++;
+    	   }
 
-        //  T O   B E   I M P L E M E N T E D
-
+    	   Bucket replaceSplit = new Bucket(null); // bucket to replace split
+    	   Bucket newTemp = new Bucket(null); // new bucket
+    	   temp = hTable.get(split); //the bucket to split
+    	   for(int m = 0; m<temp.nKeys; m++){
+    		   if(i == split){ // splitting time
+    			   if(replaceSplit.next ==null){
+    				   replaceSplit.next = new Bucket(null);
+    				   replaceSplit.next = replaceSplit;
+    			   }   
+    			   replaceSplit.key[replaceSplit.nKeys] = temp.key[m];
+    			   replaceSplit.value[replaceSplit.nKeys] = temp.value[m];
+    			   temp.nKeys++;
+    		   } // end if
+    		   else{ // new bucket time
+    			   if(newTemp.next==null){
+    				   newTemp.next = new Bucket(null);
+    				   newTemp = newTemp.next;
+    			   }
+    			   newTemp.key[newTemp.nKeys] = temp.key[m];
+    			   newTemp.value[newTemp.nKeys] = temp.value[m];  	
+    		   } // end else
+    	   } // end for loop
+    	   // update split accordingly if
+    	   if(split == mod1-1){ // mod1 = size, so -1 for index
+    		   split = 0;
+    		   mod1 = mod1*2;
+    		   mod2 = mod1*2;
+    	   }
+    	   else{ // add 1 if split < mod1
+    		   split++;
+    	   }
+       } // end else     
+             
         return null;
     } // put
 
@@ -140,12 +225,58 @@ public class LinHashMap <K, V>
      */
     private void print ()
     {
-        out.println ("Hash Table (Linear Hashing)");
-        out.println ("-------------------------------------------");
-
-        //  T O   B E   I M P L E M E N T E D
-
-        out.println ("-------------------------------------------");
+    	out.println ("Hash Table (Linear Hashing) - Entries shown as Key:Value");
+    	out.println ("-------------------------------------------");
+    	
+    	for(int i=0; i<hTable.size(); i++){
+    		Bucket temp = hTable.get(i);
+    		boolean chain = false;
+    		if( temp.next!=null ){
+    			chain = true; // chain exists if there is a next element
+    		}
+    		if(chain){ // printing chain of buckets
+    			for( int j=0; j<SLOTS; j++ ){
+    				out.print("");
+    				out.print(temp.key[j]);
+    				out.print(":");
+    				out.print(temp.value[j]);
+    				out.print("\t");
+    				if(SLOTS!=j+1){
+    					out.print("\t");
+    				} // end if
+    				else{
+    					out.print(" \t(chain) =>");
+    				} // end else
+    			} // end for loop
+    			for( int j=0; j<SLOTS; j++ ){ // last bucket
+    				out.print("");
+    				out.print(temp.key[j]);
+    				out.print(":");
+    				out.print(temp.value[j]);
+    				out.print("\t");
+    				if(SLOTS!=j+1){
+    					out.print(" \n");
+    				} // end if
+    			} // end for loop
+              } 	// end if chain
+              else{	
+            	  for( int j=0; j<SLOTS; j++ ){ // only bucket
+            		  out.print("");
+            		  out.print(temp.key[j]);
+            		  out.print(":");
+            		  out.print(temp.value[j]);
+            		  out.print("\t");
+            		  if(SLOTS!=j+1){
+            			  if(temp.value[j]==null)
+            				  out.print("");
+            			  else
+            				  out.print("\t"); 
+            		  } // end if
+            	  }	 // end for loop
+            	  out.print(" \n");
+              } // end else	
+       } // end first for loop
+    	out.println ("-------------------------------------------");
     } // print
 
     /********************************************************************************
@@ -175,16 +306,35 @@ public class LinHashMap <K, V>
     public static void main (String [] args)
     {
         LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class, 11);
+        
         int nKeys = 30;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);
         for (int i = 1; i < nKeys; i += 2) ht.put (i, i * i);
-        ht.print ();
-        for (int i = 0; i < nKeys; i++) {
+       
+        // random testing
+        out.println("Test - Value at Key12: " + ht.get(12));
+        ht.put(12, 50);
+        ht.put(18, 70);
+        ht.put(22, 90);
+        ht.put(28, 40);
+        out.println("Test - Value at Key1: " + ht.get(1));
+        out.println("Test - Value at Key5: " + ht.get(5));
+        out.println("Test - Value at Key12 (after put method): " + ht.get(12));
+        out.println("Test - Value at Key8: " + ht.get(8));
+        out.println("Test - Value at Key17: " + ht.get(17));
+        out.println("");
+        // end random testing
+        
+        out.println("(Printing Hash Table... only keys with values will appear as not null.)");
+        out.println("");
+        ht.print (); // print test/hash table
+        for (int i = 0; i < nKeys; i++) { // print keys and values
             out.println ("key = " + i + " value = " + ht.get (i));
-        } // for
+        } // for loop
+        
         out.println ("-------------------------------------------");
         out.println ("Average number of buckets accessed = " + ht.count / (double) nKeys);
+    
     } // main
 
 } // LinHashMap class
-
