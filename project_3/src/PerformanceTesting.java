@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class PerformanceTesting
 {
 	public static void main(String[] args)
@@ -10,7 +13,9 @@ public class PerformanceTesting
 		{
 			System.out.println("Tuples - " + n);
 			Table tables[] = generateTables(n);
+			
 			int studentID = (int)tables[0].getTuple(n / 2)[0];
+			int studentID2 = (int)tables[0].getTuple(3 * n / 4)[0];
 			
 			startTime = System.nanoTime();
 			for (Comparable[] tuple : tables[0].tuples)
@@ -61,13 +66,37 @@ public class PerformanceTesting
 				startTime = System.nanoTime();
 				temp = tables[0].indexJoin(tables[1], index);
 				endTime = System.nanoTime();
-				System.out.println(temp.tuples.size());
+				//System.out.println(temp.tuples.size());
 				duration = (endTime - startTime) / 1000000.0;
 				System.out.print("Join - ");
 				switch(index)
 				{
 					case 0:
 						System.out.println("TreeMap");
+						break;
+					case 1:
+						System.out.println("BPTreeMap");
+						break;
+					case 2:
+						System.out.println("LinHashMap");
+						break;
+					default:
+						break;
+				}
+				System.out.println("Time - " + duration + " ms");
+			}
+			
+			for (int index = 0;index <= 2;index ++)
+			{
+				startTime = System.nanoTime();
+				temp = tables[0].select(t -> t[0].compareTo(studentID) >= 0 && t[0].compareTo(studentID2) <= 0, index);
+				endTime = System.nanoTime();
+				duration = (endTime - startTime) / 1000000.0;
+				System.out.print("Range Select - ");
+				switch(index)
+				{
+					case 0:
+						System.out.println("Table Scan");
 						break;
 					case 1:
 						System.out.println("BPTreeMap");

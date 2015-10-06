@@ -172,13 +172,37 @@ public class Table
      * @param predicate  the check condition for tuples
      * @return  a table with tuples satisfying the predicate
      */
-    public Table select (Predicate <Comparable []> predicate)
+    public Table select (Predicate <Comparable []> predicate, int indexType)
     {
         //out.println ("RA> " + name + ".select (" + predicate + ")");
 
-        return new Table (name + count++, attribute, domain, key,
+    	if (indexType == 0)
+    	{
+    		return new Table (name + count++, attribute, domain, key,
                    tuples.stream ().filter (t -> predicate.test (t))
                                    .collect (Collectors.toList ()));
+    	}
+    	else
+    	{
+    		List <Comparable []> rows = new ArrayList <> ();
+    		for (KeyType k : index.keySet())
+    		{
+    			Comparable [] key = {(Integer) k.key[0]};
+    			if (predicate.test(key))
+    			{
+    				if (indexType == 1)
+    				{
+    					rows.add(bpIndex.get(k));
+    				}
+    				else
+    				{
+    					rows.add(linIndex.get(k));
+    				}
+    			}
+    		}
+    		
+    		return new Table (name + count++, attribute, domain, key, rows);
+    	}
     } // select
 
     /************************************************************************************
