@@ -369,7 +369,12 @@ public class BpTreeMap <K extends Comparable <K>, V>
         	
         	//if node has not been inserted then insert 
         	if (!didInsert) {
-        		insert (key, ref, (Node) n.ref[n.nKeys], n);
+        		Node tmpNode = (Node) n.ref[n.nKeys];
+        		if (tmpNode == null)
+        		{
+        			out.println(tmpNode);
+        		}
+        		insert (key, ref, tmpNode, n);
         	}
         	
         	//if node is full then split it 
@@ -434,10 +439,16 @@ public class BpTreeMap <K extends Comparable <K>, V>
      */
     private void wedge (K key, Object ref, Node n, int i)
     {
+    	if (!n.isLeaf)
+    	{
+    		n.ref[n.nKeys + 1] = n.ref[n.nKeys];
+    	}
+    	
         for (int j = n.nKeys; j > i; j--) {
             n.key [j] = n.key [j - 1];
             n.ref [j] = n.ref [j - 1];
         } // for
+        
         n.key [i] = key;
         n.ref [i] = ref;
         n.nKeys++;
@@ -523,7 +534,14 @@ public class BpTreeMap <K extends Comparable <K>, V>
     	BpTreeMap <Integer, Integer> bpt = new BpTreeMap <> (Integer.class, Integer.class);
         int totKeys = 10;
         if (args.length == 1) totKeys = Integer.valueOf (args [0]);
-        for (int i = 1; i < totKeys; i += 2) bpt.put (i, i * i);
+        int values[] = {700701, 458642, 738714, 406377, 312281, 534527, 979993, 370723, 57288, 580918};
+        for (int value : values)
+        {
+        	bpt.put (value, value * value);
+        }
+        //for (int i = 1; i < totKeys; i += 2) {
+        	//bpt.put (i, i * i);
+       // }
         bpt.print (bpt.root, 0);
         for (int i = 0; i < totKeys; i++) {
             out.println ("key = " + i + " value = " + bpt.get (i));

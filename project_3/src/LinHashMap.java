@@ -177,9 +177,10 @@ public class LinHashMap <K, V>
 
     	   Bucket replaceSplit = new Bucket(null); // bucket to replace split
     	   Bucket newTemp = new Bucket(null); // new bucket
-    	   temp = hTable.get(split); //the bucket to split
+    	   temp = hTable.get(split + 1); //the bucket to split
     	   for(int m = 0; m<temp.nKeys; m++){
-    		   if(i == split){ // splitting time
+    		   int i2 = h2(temp.key[m]);
+    		   if(i2 == split){ // splitting time
     			   if(replaceSplit.next ==null){
     				   replaceSplit.next = new Bucket(null);
     				   replaceSplit.next = replaceSplit;

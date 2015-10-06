@@ -82,7 +82,7 @@ public class TableTest
 	public void testSelect()
 	{
 		Table movie = this.createMovieTable();
-		Table movie_select = movie.select(new KeyType("Star_Wars"));
+		Table movie_select = movie.select(new KeyType("Star_Wars"), 0);
 		Comparable[] starWars = movie_select.getTuple(0);
 		
 		assertEquals(movie_select.getTableLength(), 1);
@@ -123,7 +123,7 @@ public class TableTest
 	{
 		Table movie = this.createMovieTable();
 		Table studio = this.createStudioTable();
-		Table eJoin = movie.join("studioName", "name", studio);
+		Table eJoin = movie.join("studioName", "name", studio, 0);
 		
 		Comparable studioName = eJoin.getTuple(0)[eJoin.col("studioName")];
 		Comparable name = eJoin.getTuple(0)[eJoin.col("name")];

@@ -56,7 +56,7 @@ public class Table
 
     /** Collection of tuples (data storage).
      */
-    private final List <Comparable []> tuples;
+    public final List <Comparable []> tuples;
 
     /** Primary key.
      */
@@ -65,6 +65,10 @@ public class Table
     /** Index into tuples (maps key to tuple number).
      */
     private final Map <KeyType, Comparable []> index;
+    private final BpTreeMap <KeyType, Comparable[]> bpIndex;
+    private final ExtHashMap <KeyType, Comparable[]> extIndex;
+    private final LinHashMap <KeyType, Comparable[]> linIndex;
+    
 
     //----------------------------------------------------------------------------------
     // Constructors
@@ -85,7 +89,10 @@ public class Table
         domain    = _domain;
         key       = _key;
         tuples    = new ArrayList <> ();
-        index     = new BpTreeMap <KeyType, Comparable []> (KeyType.class, Comparable [].class);      // also try BPTreeMap, LinHashMap or ExtHashMap
+        index     = new TreeMap <KeyType, Comparable []> ();
+        bpIndex   = new BpTreeMap <KeyType, Comparable []> (KeyType.class, Comparable [].class);
+        extIndex  = new ExtHashMap <KeyType, Comparable []> (KeyType.class, Comparable [].class, 4);
+        linIndex  = new LinHashMap <KeyType, Comparable []> (KeyType.class, Comparable [].class, 4);
         
     } // constructor
 
@@ -106,7 +113,10 @@ public class Table
         domain    = _domain;
         key       = _key;
         tuples    = _tuples;
-        index     = new BpTreeMap <KeyType, Comparable []> (KeyType.class, Comparable [].class);      // also try BPTreeMap, LinHashMap or ExtHashMap
+        index     = new TreeMap <KeyType, Comparable []> ();
+        bpIndex   = new BpTreeMap <KeyType, Comparable []> (KeyType.class, Comparable [].class);
+        extIndex  = new ExtHashMap <KeyType, Comparable []> (KeyType.class, Comparable [].class, 4);
+        linIndex  = new LinHashMap <KeyType, Comparable []> (KeyType.class, Comparable [].class, 4);
     } // constructor
 
     /************************************************************************************
@@ -120,7 +130,7 @@ public class Table
     {
         this (name, attributes.split (" "), findClass (domains.split (" ")), _key.split(" "));
 
-        out.println ("DDL> create table " + name + " (" + attributes + ")");
+        //out.println ("DDL> create table " + name + " (" + attributes + ")");
     } // constructor
 
     //----------------------------------------------------------------------------------
@@ -164,7 +174,7 @@ public class Table
      */
     public Table select (Predicate <Comparable []> predicate)
     {
-        out.println ("RA> " + name + ".select (" + predicate + ")");
+        //out.println ("RA> " + name + ".select (" + predicate + ")");
 
         return new Table (name + count++, attribute, domain, key,
                    tuples.stream ().filter (t -> predicate.test (t))
@@ -176,17 +186,30 @@ public class Table
      * (Map) to retrieve the tuple with the given key value.
      *
      * @param keyVal  the given key value
+     * @param indexType which type of index to use
      * @return  a table with the tuple satisfying the key predicate
      */
-    public Table select (KeyType keyVal)
+    public Table select (KeyType keyVal, int indexType)
     {
-        out.println ("RA> " + name + ".select (" + keyVal + ")");
+        //out.println ("RA> " + name + ".select (" + keyVal + ")");
 
         List <Comparable []> rows = new ArrayList <> ();
 
         //  Implemented by Michael Bottone
-
-        Comparable[] result = index.get(keyVal); // Use the index map to retrieve the tuple for the given key
+        Comparable[] result;
+        if (indexType == 0)
+        {
+        	result = index.get(keyVal); // Use the index map to retrieve the tuple for the given key
+        }
+        else if (indexType == 1)
+        {
+        	result = bpIndex.get(keyVal);
+        }
+        else
+        {
+        	result = linIndex.get(keyVal);
+        }
+        
         rows.add(result); // Add the returned tuple to the returned result
 
         return new Table (name + count++, attribute, domain, key, rows);
@@ -270,6 +293,42 @@ public class Table
         return new Table (name + count++, attribute, domain, key, rows);
     } // minus
 
+    public Table indexJoin (Table table2, int indexType)
+    {
+    	List <Comparable []> rows = new ArrayList <> ();
+    	
+    	Map <KeyType, Comparable []> firstIndex;
+    	Map <KeyType, Comparable []> secondIndex;
+    	
+    	if (indexType == 0)
+    	{
+    		firstIndex = index;
+    		secondIndex = table2.index;
+    	}
+    	else if (indexType == 1)
+    	{
+    		firstIndex = bpIndex;
+    		secondIndex = table2.bpIndex;
+    	}
+    	else
+    	{
+    		firstIndex = linIndex;
+    		secondIndex = table2.linIndex;
+    	}
+    	
+    	for (KeyType key : index.keySet())
+    	{
+        	Comparable [] tuple = firstIndex.get(key);
+        	Comparable [] tuple2 = secondIndex.get(key);
+        	if (tuple2 != null)
+        	{
+        		rows.add(ArrayUtil.concat(tuple, tuple2));
+        	}
+    	}
+    	
+    	return new Table (name + count++, ArrayUtil.concat (attribute, table2.attribute),
+                ArrayUtil.concat (domain, table2.domain), key, rows);
+    }
     /************************************************************************************
      * Join this table and table2 by performing an "equi-join".  Tuples from both tables
      * are compared requiring attributes1 to equal attributes2.  Disambiguate attribute
@@ -280,12 +339,12 @@ public class Table
      * @param attributes1  the attributes of this table to be compared (Foreign Key)
      * @param attributes2  the attributes of table2 to be compared (Primary Key)
      * @param table2      the rhs table in the join operation
+     * @param indexType which index to use.
      * @return  a table with tuples satisfying the equality predicate
      */
-    public Table join (String attributes1, String attributes2, Table table2)
+    public Table join (String attributes1, String attributes2, Table table2, int indexType)
     {
-        out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", "
-                                               + table2.name + ")");
+        //out.println ("RA> " + name + ".join (" + attributes1 + ", " + attributes2 + ", " + table2.name + ")");
 
         String [] t_attrs = attributes1.split (" ");
         String [] u_attrs = attributes2.split (" ");
@@ -365,7 +424,7 @@ public class Table
         String addString = totalList.toString();
         addString = addString.substring(1, addString.length() - 1).replaceAll(",", " ");
         	
-        return this.join(attrs, attrs, table2).project(attrs + addString);
+        return this.join(attrs, attrs, table2, 0).project(attrs + addString);
         
     } // join
 
@@ -394,7 +453,7 @@ public class Table
      */
     public boolean insert (Comparable [] tup)
     {
-        out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
+        //out.println ("DML> insert into " + name + " values ( " + Arrays.toString (tup) + " )");
 
         if (typeCheck (tup)) {
             tuples.add (tup);
@@ -402,6 +461,9 @@ public class Table
             int []        cols   = match (key);
             for (int j = 0; j < keyVal.length; j++) keyVal [j] = tup [cols [j]];
             index.put (new KeyType (keyVal), tup);
+            bpIndex.put(new KeyType (keyVal), tup);
+            //extIndex.put(new KeyType (keyVal), tup);
+            linIndex.put(new KeyType (keyVal), tup);
             return true;
         } else {
             return false;

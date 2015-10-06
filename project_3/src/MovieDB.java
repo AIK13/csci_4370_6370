@@ -118,7 +118,7 @@ class MovieDB
         //--------------------- indexed select: key
 
         out.println ();
-        Table t_iselect = movieStar.select (new KeyType ("Harrison_Ford"));
+        Table t_iselect = movieStar.select (new KeyType ("Harrison_Ford"), 0);
         t_iselect.print ();
 
         //--------------------- union: movie UNION cinema
@@ -136,7 +136,7 @@ class MovieDB
         //--------------------- equi-join: movie JOIN studio ON studioName = name
 
         out.println ();
-        Table t_join = movie.join ("studioName", "name", studio);
+        Table t_join = movie.join ("studioName", "name", studio, 0);
         t_join.print ();
 
         //--------------------- natural join: movie JOIN studio
