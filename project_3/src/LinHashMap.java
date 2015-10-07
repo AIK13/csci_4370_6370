@@ -94,7 +94,7 @@ public class LinHashMap <K, V>
      * @return  the set view of the map
      */
     public Set <Map.Entry <K, V>> entrySet ()
-    {
+    { // Implemented by Tiffany Chong
     	Set <Map.Entry <K, V>> enSet = new HashSet <> ();
 
     	for( int i=0; i<hTable.size(); i++ ){ // loop through bucket
@@ -113,7 +113,7 @@ public class LinHashMap <K, V>
      * @return  the value associated with the key
      */
     public V get (Object key)
-    {
+    { // Implemented by Tiffany Chong
     	int i = h (key);
     	if(i<split){
     		i=h2(key);
@@ -133,8 +133,7 @@ public class LinHashMap <K, V>
     		   temp = temp.next; // if key not found, try next
     	   } // end while
     	} // end else
-
-    	return null; 
+    	// return null; // commented out. mostly here as a failsafe
     } // get
 
     /********************************************************************************
@@ -144,7 +143,7 @@ public class LinHashMap <K, V>
      * @return  null (not the previous value)
      */
     public V put (K key, V value)
-    {
+    { // Implemented by Tiffany Chong
        int i = h (key);
        if(i<split){
               i=h2(key);
@@ -225,7 +224,7 @@ public class LinHashMap <K, V>
      * Print the hash table.
      */
     private void print ()
-    {
+    { // Implemented by Tiffany Chong
     	out.println ("Hash Table (Linear Hashing) - Entries shown as Key:Value");
     	out.println ("-------------------------------------------");
     	
