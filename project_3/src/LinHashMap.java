@@ -133,7 +133,7 @@ public class LinHashMap <K, V>
     		   temp = temp.next; // if key not found, try next
     	   } // end while
     	} // end else
-    	// return null; // commented out. mostly here as a failsafe
+    	return null; 
     } // get
 
     /********************************************************************************
