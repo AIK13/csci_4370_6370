@@ -306,7 +306,7 @@ public class LinHashMap <K, V>
      */
     public static void main (String [] args)
     {
-        LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class, 11);
+        LinHashMap <Integer, Integer> ht = new LinHashMap <> (Integer.class, Integer.class,8);
         
         int nKeys = 30;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);

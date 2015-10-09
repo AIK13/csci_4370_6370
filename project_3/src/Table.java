@@ -65,7 +65,7 @@ public class Table
     /** Index into tuples (maps key to tuple number).
      */
     private final Map <KeyType, Comparable []> index;
-    private final BpTreeMap <KeyType, Comparable[]> bpIndex;
+    public final BpTreeMap <KeyType, Comparable[]> bpIndex;
     private final ExtHashMap <KeyType, Comparable[]> extIndex;
     private final LinHashMap <KeyType, Comparable[]> linIndex;
     

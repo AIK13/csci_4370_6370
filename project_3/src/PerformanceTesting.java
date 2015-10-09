@@ -89,7 +89,13 @@ public class PerformanceTesting
 			for (int index = 0;index <= 2;index ++)
 			{
 				startTime = System.nanoTime();
-				temp = tables[0].select(t -> t[0].compareTo(studentID) >= 0 && t[0].compareTo(studentID2) <= 0, index);
+				if (index == 1)
+				{
+					tables[0].bpIndex.subMap(new KeyType(studentID), new KeyType(studentID2)).entrySet().forEach(e -> e.getValue());
+				}
+				else {
+					temp = tables[0].select(t -> t[0].compareTo(studentID) >= 0 && t[0].compareTo(studentID2) <= 0, index);
+				}
 				endTime = System.nanoTime();
 				duration = (endTime - startTime) / 1000000.0;
 				System.out.print("Range Select - ");
