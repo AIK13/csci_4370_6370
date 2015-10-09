@@ -36,12 +36,15 @@ public class ExtHashMap <K, V>
     private class Bucket
     {
         int  nKeys;
+        int localDepth;
+        int bucketNum;
         K [] key;
         V [] value;
         @SuppressWarnings("unchecked")
         Bucket ()
         {
             nKeys = 0;
+            localDepth = 1;
             key   = (K []) Array.newInstance (classK, SLOTS);
             value = (V []) Array.newInstance (classV, SLOTS);
         } // constructor
@@ -67,6 +70,10 @@ public class ExtHashMap <K, V>
      */
     private int count = 0;
 
+    /** The global depth of the hashing table
+     */
+     private int globalDepth = 0;
+
     /********************************************************************************
      * Construct a hash table that uses Extendable Hashing.
      * @param classK    the class for keys (K)
@@ -80,10 +87,13 @@ public class ExtHashMap <K, V>
         hTable = new ArrayList <> ();   // for bucket storage
         dir    = new ArrayList <> ();   // for bucket access
         mod    = nBuckets = initSize;
+        globalDepth = 1;
 
         for (int i = 0; i < nBuckets; i++) {
             Bucket newBucket = new Bucket();
 
+            newBucket.localDepth = initSize/2;
+            newBucket.bucketNum = i;
             hTable.add(newBucket);
             dir.add(newBucket);
         } //for
@@ -102,8 +112,8 @@ public class ExtHashMap <K, V>
         for (Bucket curr : dir) { // iterates through buckets in the directory
             for (int i = 0; i < curr.nKeys; i++) { //iterates through keys in each bucket
               enSet.add(new AbstractMap.SimpleEntry<K, V>(curr.key[i], curr.value[i]));
-            } //for
-        } //for
+            } // for
+        } // for
 
         return enSet;
     } // entrySet
@@ -119,7 +129,7 @@ public class ExtHashMap <K, V>
         Bucket b = dir.get (i);
 
         // Implemented by Ashley Bennett
-        // Iterates through keys it is found, and returns the value associated with it
+        // Iterates through keys, and returns the value associated with the parameter key
         for (int j = 0; j < b.nKeys; j++) {
           if (key.equals(b.key[j]))
               return b.value[j];
@@ -127,6 +137,71 @@ public class ExtHashMap <K, V>
 
         return null;
     } // get
+
+
+    /********************************************************************************
+     * Splits the bucket and disperses its members.
+     * @param Bucket  the bucket to split
+     */
+     public void split(Bucket b) {
+       // implemented by Ashley Bennett
+
+        // if the global depth is less than the local depth
+        // double the directory
+        if (this.globalDepth < b.localDepth) {
+             this.globalDepth++;
+
+             // duplicate directory
+             // set members in correct bucket
+             List<Bucket> directory = dir;
+             dir.addAll(directory);
+             for (int j = 0; j < dir.size(); j++) {
+                 for (int k = 0; k < hTable.size(); k++) {
+                     Bucket curr = hTable.get(k);
+                     this.count++;
+                     if(j % (Math.pow(2, curr.localDepth)) == curr.bucketNum)
+                         dir.set(j, curr);
+                 } // k for
+             } // j for
+             mod = mod * 2;
+         } // else
+
+         // if the global depth is greater than the global depth,
+         // make room for added bucket
+         else{
+             for (int j = 0; j < dir.size(); j++) {
+                 for(int k = 0; k < hTable.size(); k++){
+                     Bucket temp = hTable.get(k);
+                     this.count++;
+                     if(j % (Math.pow(2, temp.localDepth)) == temp.bucketNum)
+                         dir.set(j, temp);
+                 } // k for
+             } // j for
+         } // else
+
+         // rehash keys in the split bucket
+         for (int j = 0; j < b.nKeys; j++){
+             int k = h(b.key[j]);
+             Bucket c = dir.get(k);
+             if(b != c){
+                 this.put(b.key[j],b.value[j]);
+                 b.key[j] = null;
+                 b.value[j] = null;
+             } // if
+         } // for
+
+         // remove null entries
+         int index = 0;
+         for(int k = 0; k < b.nKeys; k++){
+             if(b.key[k] != null){
+                 b.key[index] = b.key[k];
+                 b.value[index] = b.value[k];
+                 index++;
+             } // if
+         } // for
+
+         b.nKeys = index;
+     } // split
 
     /********************************************************************************
      * Put the key-value pair in the hash table.
@@ -141,32 +216,37 @@ public class ExtHashMap <K, V>
           return null;
 
         int    i = h (key);
-        Bucket b = dir.get (i);
+        Bucket b = dir.get(i);
 
         // Implemented by Ashley Bennett
-
-        // Adds key-value pair to the bucket if there is room.
-        if (b.nKeys < SLOTS) {
-          count++;
-          b.key[b.nKeys] = key;
-          b.value[b.nKeys] = value;
-          b.nKeys++;
-          return null;
+        // adds key-value pair to the bucket if there is room
+        if(b.nKeys < SLOTS) {
+            b.key[b.nKeys] = key;
+            b.value[b.nKeys] = value;
+            b.nKeys++;
         } // if
 
-        // Adds a bucket to the hash table, and increments mod.
-        // Put is recursively called until there is an available bucket.
-        else {
-            this.mod = this.mod++;
-            this.hTable.add(b);
-            put(key, value);
+        // adds a bucket, splits the full bucket, and tries to add pair again
+        else{
+            hTable.add(new Bucket());
+            Double d = Math.pow(2, b.localDepth);
+
+            Bucket curr = hTable.get(hTable.size() - 1);
+            this.count++;
+
+            curr.bucketNum = b.bucketNum + d.intValue();
+            b.localDepth++;
+            curr.localDepth = b.localDepth;
+            split(b);
+
+            this.put(key, value);
         } // else
 
         return null;
-    } // put
+      } // put
 
     /********************************************************************************
-     * Return the size (SLOTS * number of buckets) of the hash table. 
+     * Return the size (SLOTS * number of buckets) of the hash table.
      * @return  the size of the hash table
      */
     public int size ()
@@ -183,7 +263,7 @@ public class ExtHashMap <K, V>
         out.println ("-------------------------------------------");
 
         // Implemented by Ashley Bennett
-        int bCount = 1; //number of buckets
+        int bCount = 0; //number of buckets
         int iCount = 0; //number of key-value pairs (items)
 
         for (Bucket curr : dir) {
@@ -195,8 +275,8 @@ public class ExtHashMap <K, V>
                 out.println(curr.value[i].toString());
 
                 iCount++;
-            } //for
-        } //for
+            } // for
+        } // for
 
         out.println ("-------------------------------------------");
     } // print
@@ -230,7 +310,7 @@ public class ExtHashMap <K, V>
         out.println ("Average number of buckets accessed = " + ht.count / (double) nKeys);
 
         /********** Additional Testing ************/
-        out.println("Test Two\n");
+        out.println("\nTest Two\n");
         ExtHashMap <Integer, Integer> test = new ExtHashMap <> (Integer.class, Integer.class, 12);
         nKeys = 40;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);
