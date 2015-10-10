@@ -44,10 +44,23 @@ public class ExtHashMap <K, V>
         Bucket ()
         {
             nKeys = 0;
-            localDepth = 1;
-            key   = (K []) Array.newInstance (classK, SLOTS);
-            value = (V []) Array.newInstance (classV, SLOTS);
+            localDepth = 0;
+            key   = (K []) Array.newInstance (classK, SLOTS+1);
+            value = (V []) Array.newInstance (classV, SLOTS+1);
         } // constructor
+        
+        public void setEqual(Bucket a){
+        	key   = (K []) Array.newInstance (classK, SLOTS+1);
+            value = (V []) Array.newInstance (classV, SLOTS+1);
+            
+        	nKeys = a.nKeys;
+        	localDepth = a.localDepth;
+        	for(int j = 0; j < a.nKeys; j++){
+        		key[j] = a.key[j];
+        		value[j] = a.value[j];
+        	} // for
+        } //setEqual
+        
     } // Bucket inner class
 
     /** The hash table storing the buckets (buckets in physical order)
@@ -73,6 +86,7 @@ public class ExtHashMap <K, V>
     /** The global depth of the hashing table
      */
      private int globalDepth = 0;
+     private int currentBucket = 1;
 
     /********************************************************************************
      * Construct a hash table that uses Extendable Hashing.
@@ -87,13 +101,19 @@ public class ExtHashMap <K, V>
         hTable = new ArrayList <> ();   // for bucket storage
         dir    = new ArrayList <> ();   // for bucket access
         mod    = nBuckets = initSize;
-        globalDepth = 1;
+        //globalDepth = 1;
 
+        //calculate global depth
+        for (int i = nBuckets; i > 1; i = i/2) {
+        	globalDepth++;
+        }
+        
         for (int i = 0; i < nBuckets; i++) {
             Bucket newBucket = new Bucket();
 
-            newBucket.localDepth = initSize/2;
-            newBucket.bucketNum = i;
+            newBucket.bucketNum = currentBucket;
+            currentBucket++;
+            newBucket.localDepth = globalDepth;
             hTable.add(newBucket);
             dir.add(newBucket);
         } //for
@@ -143,65 +163,108 @@ public class ExtHashMap <K, V>
      * Splits the bucket and disperses its members.
      * @param Bucket  the bucket to split
      */
-     public void split(Bucket b) {
+     public void split(Bucket b, int index) {
        // implemented by Ashley Bennett
+       this.count++;
 
-        // if the global depth is less than the local depth
-        // double the directory
-        if (this.globalDepth < b.localDepth) {
-             this.globalDepth++;
+       // if the global depth is less than or equal to the local depth
+       // double the directory
+       if (this.globalDepth <= b.localDepth) {
+            this.globalDepth++;
+            b.localDepth++;
 
-             // duplicate directory
-             // set members in correct bucket
-             List<Bucket> directory = dir;
-             dir.addAll(directory);
-             for (int j = 0; j < dir.size(); j++) {
-                 for (int k = 0; k < hTable.size(); k++) {
-                     Bucket curr = hTable.get(k);
-                     this.count++;
-                     if(j % (Math.pow(2, curr.localDepth)) == curr.bucketNum)
-                         dir.set(j, curr);
-                 } // k for
-             } // j for
-             mod = mod * 2;
-         } // else
-
-         // if the global depth is greater than the global depth,
-         // make room for added bucket
-         else{
-             for (int j = 0; j < dir.size(); j++) {
-                 for(int k = 0; k < hTable.size(); k++){
-                     Bucket temp = hTable.get(k);
-                     this.count++;
-                     if(j % (Math.pow(2, temp.localDepth)) == temp.bucketNum)
-                         dir.set(j, temp);
-                 } // k for
-             } // j for
-         } // else
-
-         // rehash keys in the split bucket
-         for (int j = 0; j < b.nKeys; j++){
-             int k = h(b.key[j]);
-             Bucket c = dir.get(k);
-             if(b != c){
-                 this.put(b.key[j],b.value[j]);
-                 b.key[j] = null;
-                 b.value[j] = null;
-             } // if
-         } // for
-
-         // remove null entries
-         int index = 0;
-         for(int k = 0; k < b.nKeys; k++){
-             if(b.key[k] != null){
-                 b.key[index] = b.key[k];
-                 b.value[index] = b.value[k];
-                 index++;
-             } // if
-         } // for
-
-         b.nKeys = index;
-     } // split
+            // duplicate directory
+            // set members in correct bucket
+            for (int j = mod; j < mod * 2; j++) {
+            	dir.add(new Bucket());
+            	if (h(j) != index) {
+            		 dir.set(j, dir.get(h(j)));
+            	} // if
+            	else {
+                	 mod = mod * 2;
+                	 Bucket curr = new Bucket();
+                	 Bucket newBucket = new Bucket();
+                	 newBucket.localDepth = b.localDepth;
+                	 curr.localDepth = globalDepth;
+                	 curr.nKeys = 0;
+                	 newBucket.nKeys = 0;
+                	 
+                	 for (int i = 0; i < b.nKeys; i++) {
+                		 if (h(b.key[i]) >= mod/2) {
+                			 curr.key[curr.nKeys] = b.key[i];
+                			 curr.value[curr.nKeys] = b.value[i];
+                			 curr.nKeys++;
+                		 } // if
+                		 else {
+                			 newBucket.key[newBucket.nKeys] = b.key[i];
+                			 newBucket.value[newBucket.nKeys] = b.value[i];
+                			 newBucket.nKeys++;
+                		 } // else
+                	 } // for
+                	 
+                	 // b becomes the new bucket
+                	 b.setEqual(newBucket);
+                	 dir.set(index + mod/2, curr);
+                	 hTable.add(curr);
+                	 mod = mod/2;
+                	 
+                	 curr.bucketNum = currentBucket;
+                	 currentBucket++;      	 
+                } // else
+           } // for;
+            mod = mod * 2;
+       } // if
+       else {
+    	    b.localDepth++;
+    	    Bucket curr = new Bucket();
+    	    Bucket newBucket = new Bucket();
+        	newBucket.localDepth = b.localDepth;
+        	curr.localDepth = b.localDepth;
+        	curr.nKeys = 0;
+        	newBucket.nKeys = 0;
+        	curr.bucketNum = currentBucket;
+        	currentBucket++;
+        	for (int j = 0; j < b.nKeys; j++) {
+        		if (h(b.key[j]) >= mod/2) {
+        			curr.key[curr.nKeys] = b.key[j];
+        			curr.value[curr.nKeys] = b.value[j];
+        			curr.nKeys++;
+        		} // if
+        		else {
+        			newBucket.key[newBucket.nKeys] = b.key[j];
+        			newBucket.value[newBucket.nKeys] = b.value[j];
+        			newBucket.nKeys++;
+        		} //else
+        	} // for
+        	
+        	// b becomes new bucket
+        	b.setEqual(newBucket);
+        	
+        	// update directory
+        	if (curr.nKeys > 0) {
+        		int index1 = h(curr.key[0]);
+        		while(index1 < dir.size()){
+        			dir.set(index1, curr);
+        			index1 += mod;
+        		}
+        	} // if
+        	if (b.nKeys > 0) {
+        		int index1 = h(b.key[0]);
+        		while(index1 < dir.size()){
+        			dir.set(index1, b);
+        			index1 +=mod;
+        		}
+        	}
+        	hTable.add(curr);
+        	if (b.nKeys == (SLOTS+1))
+        		split(b, index);
+        	if (curr.nKeys == (SLOTS+1))
+        		split(curr, index);
+       } // else
+       
+       nBuckets = hTable.size();
+        
+    } // split
 
     /********************************************************************************
      * Put the key-value pair in the hash table.
@@ -215,33 +278,20 @@ public class ExtHashMap <K, V>
         if (key == null)
           return null;
 
-        int    i = h (key);
-        Bucket b = dir.get(i);
+        int    index = h (key);
+        Bucket b = dir.get(index);
 
         // Implemented by Ashley Bennett
+        
         // adds key-value pair to the bucket if there is room
-        if(b.nKeys < SLOTS) {
-            b.key[b.nKeys] = key;
-            b.value[b.nKeys] = value;
-            b.nKeys++;
-        } // if
+        b.key[b.nKeys] = key;
+        b.value[b.nKeys] = value;
+        b.nKeys++;
 
-        // adds a bucket, splits the full bucket, and tries to add pair again
-        else{
-            hTable.add(new Bucket());
-            Double d = Math.pow(2, b.localDepth);
-
-            Bucket curr = hTable.get(hTable.size() - 1);
-            this.count++;
-
-            curr.bucketNum = b.bucketNum + d.intValue();
-            b.localDepth++;
-            curr.localDepth = b.localDepth;
-            split(b);
-
-            this.put(key, value);
-        } // else
-
+        // if b constains more keys than there are slots, split is called on the bucket and table index
+        if (b.nKeys >= SLOTS + 1)
+        	split(b, index);
+        
         return null;
       } // put
 
@@ -299,16 +349,16 @@ public class ExtHashMap <K, V>
     {
         out.println("Test One\n");
         ExtHashMap <Integer, Integer> ht = new ExtHashMap <> (Integer.class, Integer.class, 11);
-        int nKeys = 30;
+        int nKeys = 35;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);
-        for (int i = 1; i < nKeys; i += 2) ht.put (i, i * i);
+        for (int i = 0; i < nKeys; i += 1) ht.put (i, i * i);
         ht.print ();
         for (int i = 0; i < nKeys; i++) {
             out.println ("key = " + i + " value = " + ht.get (i));
         } // for
         out.println ("-------------------------------------------");
         out.println ("Average number of buckets accessed = " + ht.count / (double) nKeys);
-
+        
         /********** Additional Testing ************/
         out.println("\nTest Two\n");
         ExtHashMap <Integer, Integer> test = new ExtHashMap <> (Integer.class, Integer.class, 12);
@@ -330,6 +380,6 @@ public class ExtHashMap <K, V>
 
         out.println("\n");
         test.print();
+        
     } // main
-
 } // ExtHashMap class
