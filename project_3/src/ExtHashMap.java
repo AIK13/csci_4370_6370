@@ -246,7 +246,7 @@ public class ExtHashMap <K, V>
         		while(index1 < dir.size()){
         			dir.set(index1, curr);
         			index1 += mod;
-        		}
+        		} // while
         	} // if
         	if (b.nKeys > 0) {
         		int index1 = h(b.key[0]);
@@ -272,31 +272,54 @@ public class ExtHashMap <K, V>
      * @param value  the value to insert
      * @return  null (not the previous value)
      */
-    public V put (K key, V value)
+     public V put (K key, V value)
     {
-        //Check that a key is given.
-        if (key == null)
-          return null;
-
-        int    index = h (key);
-        Bucket b = dir.get(index);
-
-        // Implemented by Ashley Bennett
-        
-        // adds key-value pair to the bucket if there is room
-        if (b.nKeys < SLOTS) {
-               b.key[b.nKeys] = key;
-              b.value[b.nKeys] = value;
-              b.nKeys++;
-        }
-
-        // if b constains more keys than there are slots, split is called on the bucket and table index
-        else {
-        	split(b, index);
-        }
-        
-        return null;
-      } // put
+    	if (key == null) {
+			return null;
+		}
+		
+		int i = h(key);
+		Bucket b = dir.get(i);
+		
+		// Determine if bucket is full
+		if (b.nKeys < SLOTS) {
+			this.count++;
+			
+			b.key[b.nKeys] = key;
+			b.value[b.nKeys] = value;
+			b.nKeys++;
+			
+			return null;
+		}	
+		else {
+			
+			K[] tempK = (K[]) Array.newInstance(classK, SLOTS+1);
+			V[] tempV = (V[]) Array.newInstance(classV, SLOTS+1);
+			
+			for (int j = 0; j < SLOTS; j++) {
+				tempK[j] = b.key[j];
+				tempV[j] = b.value[j];	
+			}
+			
+			tempK[SLOTS] = key;
+			tempV[SLOTS] = value;
+			
+			dir.set(i, new Bucket());
+			
+			Bucket newBucket = new Bucket();
+			
+			hTable.add(newBucket);
+			dir.add(i, newBucket);
+			mod++;
+			nBuckets++;
+			
+			for (int j = 0; j < tempK.length; j++) {
+				put(tempK[j], tempV[j]);
+			}
+		}
+		
+		return null;
+    } // put
 
     /********************************************************************************
      * Return the size (SLOTS * number of buckets) of the hash table.
