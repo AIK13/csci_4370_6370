@@ -45,13 +45,13 @@ public class ExtHashMap <K, V>
         {
             nKeys = 0;
             localDepth = 0;
-            key   = (K []) Array.newInstance (classK, SLOTS+1);
-            value = (V []) Array.newInstance (classV, SLOTS+1);
+            key   = (K []) Array.newInstance (classK, SLOTS);
+            value = (V []) Array.newInstance (classV, SLOTS);
         } // constructor
         
         public void setEqual(Bucket a){
-        	key   = (K []) Array.newInstance (classK, SLOTS+1);
-            value = (V []) Array.newInstance (classV, SLOTS+1);
+        	key   = (K []) Array.newInstance (classK, SLOTS);
+            value = (V []) Array.newInstance (classV, SLOTS);
             
         	nKeys = a.nKeys;
         	localDepth = a.localDepth;
@@ -284,13 +284,16 @@ public class ExtHashMap <K, V>
         // Implemented by Ashley Bennett
         
         // adds key-value pair to the bucket if there is room
-        b.key[b.nKeys] = key;
-        b.value[b.nKeys] = value;
-        b.nKeys++;
+        if (b.nKeys < SLOTS) {
+               b.key[b.nKeys] = key;
+              b.value[b.nKeys] = value;
+              b.nKeys++;
+        }
 
         // if b constains more keys than there are slots, split is called on the bucket and table index
-        if (b.nKeys >= SLOTS + 1)
+        else {
         	split(b, index);
+        }
         
         return null;
       } // put
@@ -347,11 +350,10 @@ public class ExtHashMap <K, V>
      */
     public static void main (String [] args)
     {
-        out.println("Test One\n");
         ExtHashMap <Integer, Integer> ht = new ExtHashMap <> (Integer.class, Integer.class, 11);
-        int nKeys = 35;
+        int nKeys = 30;
         if (args.length == 1) nKeys = Integer.valueOf (args [0]);
-        for (int i = 0; i < nKeys; i += 1) ht.put (i, i * i);
+        for (int i = 1; i < nKeys; i += 2) ht.put (i, i * i);
         ht.print ();
         for (int i = 0; i < nKeys; i++) {
             out.println ("key = " + i + " value = " + ht.get (i));
