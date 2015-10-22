@@ -4,12 +4,18 @@ import java.util.*;
 
 public class PostgresConnect
 {
+	/**
+	 * Static constants to refer to the tables
+	 */
 	private static final int STUDENT_TABLE_ID = 0;
 	private static final int PROFESSOR_TABLE_ID = 1;
 	private static final int COURSE_TABLE_ID = 2;
 	private static final int TEACHING_TABLE_ID = 3;
 	private static final int TRANSCRIPT_TABLE_ID = 4;
 	
+	/**
+	 * Storage variables
+	 */
 	private static Connection con;
 	private static Comparable[][][] data;
 	private static PreparedStatement stmt;
@@ -49,6 +55,9 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Generates the data values to be inserted into the database.
+	 */
 	private static void generateTuples()
 	{
 		TupleGenerator test = new TupleGeneratorImpl ();
@@ -92,6 +101,10 @@ public class PostgresConnect
         System.out.println("Tuples created!");
 	}
 	
+	/**
+	 * Creates the Student table in the database.
+	 * @throws SQLException
+	 */
 	private static void createStudentTable() throws SQLException
 	{
 		System.out.println("Creating student table...");
@@ -103,6 +116,10 @@ public class PostgresConnect
 				+ ");").execute();
 	}
 	
+	/**
+	 * Adds the data from the tuples to the Student database.
+	 * @throws SQLException
+	 */
 	private static void populateStudentTable() throws SQLException
 	{
 		System.out.println("Populating student table...");
@@ -121,6 +138,10 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Creates the Professor table.
+	 * @throws SQLException
+	 */
 	private static void createProfessorTable() throws SQLException
 	{
 		System.out.println("Creating professor table...");
@@ -131,6 +152,10 @@ public class PostgresConnect
 				+ ");").execute();
 	}
 	
+	/**
+	 * Adds the tuples to the Professor table.
+	 * @throws SQLException
+	 */
 	private static void populateProfessorTable() throws SQLException
 	{
 		System.out.println("Populating professor table...");
@@ -148,6 +173,10 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Creates the Course table.
+	 * @throws SQLException
+	 */
 	private static void createCourseTable() throws SQLException
 	{
 		System.out.println("Creating course table...");
@@ -159,6 +188,10 @@ public class PostgresConnect
 				+ ");").execute();
 	}
 	
+	/**
+	 * Adds the tuples to the Course table.
+	 * @throws SQLException
+	 */
 	private static void populateCourseTable() throws SQLException
 	{
 		System.out.println("Populating course table...");
@@ -177,6 +210,10 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Creates the teaching table.
+	 * @throws SQLException
+	 */
 	private static void createTeachingTable() throws SQLException
 	{
 		System.out.println("Creating teaching table...");
@@ -190,6 +227,10 @@ public class PostgresConnect
 				+ ");").execute();
 	}
 	
+	/**
+	 * Adds the tuples to the Teaching table.
+	 * @throws SQLException
+	 */
 	private static void populateTeachingTable() throws SQLException
 	{
 		System.out.println("Populating teaching table...");
@@ -207,6 +248,10 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Creates the Transcript table.
+	 * @throws SQLException
+	 */
 	private static void createTranscriptTable() throws SQLException
 	{
 		System.out.println("Creating transcript table...");
@@ -222,6 +267,10 @@ public class PostgresConnect
 				+ ");").execute();
 	}
 	
+	/**
+	 * Adds the tuples to the Transcript table.
+	 * @throws SQLException
+	 */
 	private static void populateTranscriptTable() throws SQLException
 	{
 		System.out.println("Populating transcript table...");
@@ -240,6 +289,10 @@ public class PostgresConnect
 		}
 	}
 	
+	/**
+	 * Empties out the tables if they already exist.
+	 * @throws SQLException
+	 */
 	private static void clearTables() throws SQLException
 	{
 		System.out.println("Clearing tables...");
@@ -250,6 +303,10 @@ public class PostgresConnect
 		con.prepareStatement("DELETE FROM student *").executeUpdate();
 	}
 	
+	/**
+	 * Create and populate all of the tables.
+	 * @throws SQLException
+	 */
 	private static void createTables() throws SQLException
 	{
 		createStudentTable();
@@ -269,6 +326,10 @@ public class PostgresConnect
 		System.out.println("Tables generated!");
 	}
 	
+	/**
+	 * Main
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
 		createConnection();
