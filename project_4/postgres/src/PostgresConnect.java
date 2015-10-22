@@ -12,8 +12,8 @@ public class PostgresConnect
 		}
 		
 		String url = "jdbc:postgresql:myDatabase";
-		String username = "mbottone";
-		String password = "";
+		String username = "postgres";
+		String password = "Flux92i7g";
 		
 		try {
 			Connection db = DriverManager.getConnection(url, username, password);
