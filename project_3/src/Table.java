@@ -229,9 +229,13 @@ public class Table
         {
         	result = bpIndex.get(keyVal);
         }
-        else
+        else if (indexType == 2)
         {
         	result = linIndex.get(keyVal);
+        }
+        else
+        {
+        	result = extIndex.get(keyVal);
         }
         
         rows.add(result); // Add the returned tuple to the returned result
@@ -334,10 +338,15 @@ public class Table
     		firstIndex = bpIndex;
     		secondIndex = table2.bpIndex;
     	}
-    	else
+    	else if (indexType == 2)
     	{
     		firstIndex = linIndex;
     		secondIndex = table2.linIndex;
+    	}
+    	else
+    	{
+    		firstIndex = extIndex;
+    		secondIndex = table2.extIndex;
     	}
     	
     	for (KeyType key : index.keySet())
@@ -486,7 +495,7 @@ public class Table
             for (int j = 0; j < keyVal.length; j++) keyVal [j] = tup [cols [j]];
             index.put (new KeyType (keyVal), tup);
             bpIndex.put(new KeyType (keyVal), tup);
-            //extIndex.put(new KeyType (keyVal), tup);
+            extIndex.put(new KeyType (keyVal), tup);
             linIndex.put(new KeyType (keyVal), tup);
             return true;
         } else {

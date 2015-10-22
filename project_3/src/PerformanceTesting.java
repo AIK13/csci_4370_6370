@@ -30,7 +30,7 @@ public class PerformanceTesting
 			System.out.println("Point Select - TableScan");
 			System.out.println("Time - " + duration + " ms");
 			
-			for (int index = 0;index <= 2;index ++)
+			for (int index = 0;index <= 3;index ++)
 			{
 				startTime = System.nanoTime();
 				temp = tables[0].select(new KeyType(studentID), index);
@@ -48,6 +48,8 @@ public class PerformanceTesting
 					case 2:
 						System.out.println("LinHashMap");
 						break;
+					case 3:
+						System.out.println("ExtHashMap");
 					default:
 						break;
 				}
@@ -61,7 +63,7 @@ public class PerformanceTesting
 			System.out.println("Join - Nested Loop Join");
 			System.out.println("Time - " + duration + " ms");
 			
-			for (int index = 0;index <= 2; index ++)
+			for (int index = 0;index <= 3; index ++)
 			{
 				startTime = System.nanoTime();
 				temp = tables[0].indexJoin(tables[1], index);
@@ -80,6 +82,8 @@ public class PerformanceTesting
 					case 2:
 						System.out.println("LinHashMap");
 						break;
+					case 3:
+						System.out.println("ExtHashMap");
 					default:
 						break;
 				}
