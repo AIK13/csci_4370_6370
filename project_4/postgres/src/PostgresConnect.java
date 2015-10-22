@@ -15,7 +15,6 @@ public class PostgresConnect
 		String username = "mbottone";
 		String password = "";
 		
-		
 		try {
 			Connection db = DriverManager.getConnection(url, username, password);
 			System.out.println("Connected!");
