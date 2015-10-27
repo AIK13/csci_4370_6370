@@ -260,10 +260,10 @@ public class SQLConnect
 				+ "crsCode varchar(16),"
 				+ "semester varchar(16),"
 				+ "grade varchar(16),"
-				+ "CONSTRAINT grad PRIMARY KEY (studId,crsCode,semester),"
-				+ "CONSTRAINT stud FOREIGN KEY (studId) REFERENCES Student (id),"
-				+ "CONSTRAINT crs FOREIGN KEY (crsCode) REFERENCES Course (crsCode),"
-				+ "CONSTRAINT section FOREIGN KEY (crsCode,semester) REFERENCES Teaching (crsCode,semester)"
+				+ "CONSTRAINT trs_grad PRIMARY KEY (studId,crsCode,semester),"
+				+ "CONSTRAINT trs_stud FOREIGN KEY (studId) REFERENCES Student (id),"
+				+ "CONSTRAINT trs_crs FOREIGN KEY (crsCode) REFERENCES Course (crsCode),"
+				+ "CONSTRAINT trs_section FOREIGN KEY (crsCode,semester) REFERENCES Teaching (crsCode,semester)"
 				+ ");").execute();
 	}
 	
@@ -296,11 +296,11 @@ public class SQLConnect
 	private static void clearTables() throws SQLException
 	{
 		System.out.println("Clearing tables...");
-		con.prepareStatement("DELETE FROM transcript *").executeUpdate();
-		con.prepareStatement("DELETE FROM teaching *").executeUpdate();
-		con.prepareStatement("DELETE FROM course *").executeUpdate();
-		con.prepareStatement("DELETE FROM professor *").executeUpdate();
-		con.prepareStatement("DELETE FROM student *").executeUpdate();
+		con.prepareStatement("DELETE FROM transcript ").executeUpdate();
+		con.prepareStatement("DELETE FROM teaching ").executeUpdate();
+		con.prepareStatement("DELETE FROM course ").executeUpdate();
+		con.prepareStatement("DELETE FROM professor ").executeUpdate();
+		con.prepareStatement("DELETE FROM student ").executeUpdate();
 	}
 	
 	/**
@@ -308,7 +308,7 @@ public class SQLConnect
 	 * @throws SQLException
 	 */
 	private static void createTables() throws SQLException
-	{
+	{	
 		createStudentTable();
 		createProfessorTable();
 		createCourseTable();
