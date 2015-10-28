@@ -1,13 +1,13 @@
 
--- Set variables for queries.
-SET @v1 = X;
-SET @v2 = X;
-SET @v3 = X;
-SET @v4 = 'crsCodeX';
-SET @v5 = 'nameX';
-SET @v6 = 'deptIdX';
-SET @v7 = 'deptIdX';
-SET @v8 = 'deptIdX';
+-- Set variables for queries. Can be changed to different values.
+SET @v1 = 75;
+SET @v2 = 100;
+SET @v3 = 900;
+SET @v4 = 'crsCode44887';
+SET @v5 = 'name334241';
+SET @v6 = 'deptId999245';
+SET @v7 = 'deptId995293';
+SET @v8 = 'deptId999245';
 
 -- Query 1: List the name of the student with id equal to v1 (id).
 SELECT name 
