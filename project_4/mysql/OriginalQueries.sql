@@ -1,8 +1,8 @@
 
 -- Set variables for queries.
-SET @v1 = 75;
-SET @v2 = 75;
-SET @v3 = 75;
+SET @v1 = X;
+SET @v2 = X;
+SET @v3 = X;
 SET @v4 = 'crsCodeX';
 SET @v5 = 'nameX';
 SET @v6 = 'deptIdX';
